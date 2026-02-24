@@ -7,6 +7,9 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- Configuration - loaded first -->
+    <script src="config.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -699,6 +702,16 @@
     </div>
 
     <script>
+        // Use configuration from config.js with fallback
+        const CONFIG = window.KRO_CONFIG || {
+            GOOGLE_SCRIPT_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
+            API_SECRET_TOKEN: 'dev-mode-token-do-not-use-in-production',
+            CURRENCY: '₦',
+            ENABLE_GOOGLE_SHEETS: false,
+            COMPANY_NAME: 'K.R.O Cleaning Service',
+            COMPANY_PHONE: '+234 XXX XXX XXXX'
+        };
+
         // Pricing data from your PDFs
         const pricing = {
             residential: {
@@ -835,9 +848,6 @@
             }
         };
 
-        // Google Apps Script Web App URL (UPDATE THIS WITH YOUR URL)
-        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-
         // DOM Elements
         const propertyTypeRadios = document.querySelectorAll('input[name="propertyType"]');
         const residentialPackages = document.getElementById('residentialPackages');
@@ -925,7 +935,7 @@
                     <label class="addon-item">
                         <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}">
                         <span class="addon-name">${addon.name}</span>
-                        <span class="addon-price">₦${addon.price.toLocaleString()}</span>
+                        <span class="addon-price">${CONFIG.CURRENCY}${addon.price.toLocaleString()}</span>
                         <small>(${addon.time})</small>
                     </label>
                 `;
@@ -1019,7 +1029,7 @@
             }
             
             // Update display
-            totalPriceSpan.textContent = `₦${Math.round(total).toLocaleString()}`;
+            totalPriceSpan.textContent = `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`;
             
             // Show breakdown
             let breakdownHtml = '<h3>Price Breakdown</h3>';
@@ -1027,14 +1037,14 @@
                 breakdownHtml += `
                     <div class="breakdown-item">
                         <span>${item.item}</span>
-                        <span>₦${Math.abs(item.cost).toLocaleString()}${item.cost < 0 ? ' discount' : ''}</span>
+                        <span>${CONFIG.CURRENCY}${Math.abs(item.cost).toLocaleString()}${item.cost < 0 ? ' discount' : ''}</span>
                     </div>
                 `;
             });
             breakdownHtml += `
                 <div class="breakdown-item total">
                     <span>Total</span>
-                    <span>₦${Math.round(total).toLocaleString()}</span>
+                    <span>${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}</span>
                 </div>
             `;
             
@@ -1100,8 +1110,9 @@
                 selectedAddons.push(checkbox.dataset.name);
             });
             
-            // Prepare data for Google Sheets
-            const formData = {
+            // Prepare data for Google Sheets with secret token
+            const formData = new URLSearchParams({
+                secretToken: CONFIG.API_SECRET_TOKEN,
                 timestamp: new Date().toLocaleString('en-NG', { timeZone: 'Africa/Lagos' }),
                 fullName: document.getElementById('fullName').value.trim(),
                 email: document.getElementById('email').value.trim(),
@@ -1115,53 +1126,53 @@
                 rooms: getRoomDetails(),
                 addons: selectedAddons.join(', ') || 'None',
                 additionalCleaners: document.getElementById('additionalCleaners')?.value || '0',
-                totalAmount: `₦${Math.round(total).toLocaleString()}`,
+                totalAmount: `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`,
                 rawTotal: Math.round(total)
-            };
-            
-            // Simulate API call (replace with actual Google Apps Script URL)
-            setTimeout(() => {
-                loadingOverlay.style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                // Scroll to success message
-                successMessage.scrollIntoView({ behavior: 'smooth' });
-                
-                // Reset form after 3 seconds
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                    // Optional: redirect to thank you page or reset form
-                    // window.location.href = 'thank-you.html';
-                }, 3000);
-                
-                console.log('Form data:', formData); // For testing
-            }, 1500);
-            
-            // Uncomment this when you have your Google Apps Script URL
-            /*
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(formData)
-            })
-            .then(response => {
-                loadingOverlay.style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                // Redirect to thank you page after 2 seconds
-                setTimeout(() => {
-                    window.location.href = `thank-you.html?name=${encodeURIComponent(formData.fullName)}&type=${formData.propertyType}&package=${formData.package}&price=${formData.rawTotal}`;
-                }, 2000);
-            })
-            .catch(error => {
-                loadingOverlay.style.display = 'none';
-                alert('There was an error submitting your quote. Please try again.');
-                console.error('Error:', error);
             });
-            */
+            
+            // Send to Google Sheets if enabled
+            if (CONFIG.ENABLE_GOOGLE_SHEETS && CONFIG.GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                })
+                .then(() => {
+                    handleSubmitSuccess();
+                })
+                .catch(error => {
+                    handleSubmitError(error);
+                });
+            } else {
+                // Development mode - simulate success
+                setTimeout(() => {
+                    handleSubmitSuccess();
+                }, 1500);
+                
+                console.log('DEV MODE - Form data:', Object.fromEntries(formData));
+            }
+        }
+
+        function handleSubmitSuccess() {
+            loadingOverlay.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+                // Optional: reset form
+                // document.getElementById('pricingForm').reset();
+                // calculatePrice();
+            }, 3000);
+        }
+
+        function handleSubmitError(error) {
+            loadingOverlay.style.display = 'none';
+            alert('There was an error submitting your quote. Please try again or call us at ' + CONFIG.COMPANY_PHONE);
+            console.error('Submission error:', error);
         }
 
         function getResidentialPackageName(pkg) {
