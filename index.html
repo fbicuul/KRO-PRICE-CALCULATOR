@@ -91,6 +91,7 @@
             border-radius: 10px;
             padding: 20px;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .package-option:hover {
             border-color: #667eea;
@@ -109,21 +110,115 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .package-details ul {
+        .package-details .description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .info-btn {
+            background: none;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .info-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        .info-btn i {
+            margin-right: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-modal {
+            position: absolute;
+            right: 25px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+        }
+        .close-modal:hover {
+            color: #333;
+        }
+        .modal h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-right: 30px;
+        }
+        .modal h3 {
+            color: #764ba2;
+            margin: 20px 0 10px;
+        }
+        .modal ul {
             list-style: none;
             padding: 0;
         }
-        .package-details ul li {
-            color: #777;
-            margin-bottom: 5px;
-            padding-left: 20px;
+        .modal ul li {
+            padding: 8px 0 8px 25px;
             position: relative;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .package-details ul li:before {
+        .modal ul li:before {
             content: "✓";
             color: #667eea;
             position: absolute;
             left: 0;
+            font-weight: bold;
+        }
+        .modal .note {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            color: #555;
+        }
+        .modal .note p {
+            margin: 5px 0;
+        }
+        .modal .ideal-for {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .package-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
         }
         .addons-grid {
             display: grid;
@@ -226,6 +321,7 @@
             .form-section { padding: 20px; }
             .package-grid { grid-template-columns: 1fr; }
             #totalPrice { font-size: 2em; }
+            .modal-content { margin: 20px; padding: 20px; }
         }
     </style>
 </head>
@@ -277,70 +373,98 @@
                 </div>
             </div>
 
+            <!-- Package Selection - Residential -->
             <div class="form-section" id="residentialPackages">
                 <h2>Select Residential Package</h2>
                 <div class="package-grid">
-                    <label class="package-option">
+                    <div class="package-option">
                         <input type="radio" name="residentialPackage" value="standard" checked>
                         <div class="package-details">
                             <h3>Standard Cleaning</h3>
                             <p class="price">Starting at ₦9,000</p>
-                            <ul><li>Bedrooms, bathrooms, kitchen included</li></ul>
+                            <p class="description">Regular maintenance cleaning for your home</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('residential-standard')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
-                    <label class="package-option">
+                    </div>
+                    <div class="package-option">
                         <input type="radio" name="residentialPackage" value="deep">
                         <div class="package-details">
                             <h3>Deep Cleaning</h3>
                             <p class="price">Starting at ₦41,400</p>
-                            <ul><li>Thorough, in-depth cleaning</li></ul>
+                            <p class="description">Thorough, in-depth cleaning</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('residential-deep')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
-                    <label class="package-option">
+                    </div>
+                    <div class="package-option">
                         <input type="radio" name="residentialPackage" value="movein">
                         <div class="package-details">
                             <h3>Move-In Cleaning</h3>
                             <p class="price">Starting at ₦51,000</p>
-                            <ul><li>For your new home</li></ul>
+                            <p class="description">For your new home</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('residential-movein')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
+                    </div>
                 </div>
             </div>
 
+            <!-- Package Selection - Commercial -->
             <div class="form-section" id="commercialPackages" style="display: none;">
                 <h2>Select Commercial Package</h2>
                 <div class="package-grid">
-                    <label class="package-option">
+                    <div class="package-option">
                         <input type="radio" name="commercialPackage" value="small" checked>
                         <div class="package-details">
                             <h3>Small Office</h3>
                             <p class="price">Starting at ₦45,000</p>
+                            <p class="description">For startups, clinics, small offices</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('commercial-small')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
-                    <label class="package-option">
+                    </div>
+                    <div class="package-option">
                         <input type="radio" name="commercialPackage" value="standard">
                         <div class="package-details">
                             <h3>Standard Office</h3>
                             <p class="price">Starting at ₦96,000</p>
+                            <p class="description">For corporate offices, law firms</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('commercial-standard')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
-                    <label class="package-option">
+                    </div>
+                    <div class="package-option">
                         <input type="radio" name="commercialPackage" value="large">
                         <div class="package-details">
                             <h3>Large Office</h3>
                             <p class="price">Starting at ₦150,000</p>
+                            <p class="description">For banks, ministries, hospitals</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('commercial-large')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
-                    <label class="package-option">
+                    </div>
+                    <div class="package-option">
                         <input type="radio" name="commercialPackage" value="onetime">
                         <div class="package-details">
                             <h3>One-Time Deep Clean</h3>
                             <p class="price">Starting at ₦249,000</p>
+                            <p class="description">End-of-year, post-renovation</p>
+                            <button type="button" class="info-btn" onclick="showPackageInfo('commercial-onetime')">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </button>
                         </div>
-                    </label>
+                    </div>
                 </div>
             </div>
 
+            <!-- Frequency Selection -->
             <div class="form-section">
                 <h2>Cleaning Frequency</h2>
                 <select id="frequency">
@@ -354,6 +478,7 @@
                 </select>
             </div>
 
+            <!-- Room Details - Residential -->
             <div class="form-section" id="residentialDetails">
                 <h2>Room Details</h2>
                 <div class="form-grid">
@@ -376,6 +501,7 @@
                 </div>
             </div>
 
+            <!-- Room Details - Commercial -->
             <div class="form-section" id="commercialDetails" style="display: none;">
                 <h2>Commercial Space Details</h2>
                 <div class="form-grid">
@@ -397,11 +523,13 @@
                 </div>
             </div>
 
+            <!-- Add-ons Section -->
             <div class="form-section">
                 <h2>Additional Services</h2>
                 <div class="addons-grid" id="addonsContainer"></div>
             </div>
 
+            <!-- Additional Cleaners -->
             <div class="form-section">
                 <h2>Additional Requirements</h2>
                 <div class="form-grid">
@@ -412,6 +540,7 @@
                 </div>
             </div>
 
+            <!-- Price Display -->
             <div class="price-section">
                 <h2>Estimated Price</h2>
                 <div class="price-box">
@@ -430,6 +559,15 @@
         </form>
     </div>
 
+    <!-- Package Information Modal -->
+    <div id="packageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
@@ -444,6 +582,360 @@
             CURRENCY: '₦',
             ENABLE_GOOGLE_SHEETS: true,
             COMPANY_PHONE: '+234 704 918 9964'
+        };
+
+        // Package information from PDFs
+        const packageInfo = {
+            'residential-standard': {
+                title: 'Standard Cleaning Package',
+                ideal: 'Regular maintenance cleaning for homes',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'Cleaner does not bring cleaning products. They will use products you provide.',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Folding or hanging of up to 10 clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Living Areas': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Folding of more than 10 items of clothing attracts additional charges',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'residential-deep': {
+                title: 'Deep Cleaning Package',
+                ideal: 'Thorough, in-depth cleaning of your home',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'More intensive version of standard cleaning with deeper cleaning of all areas',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Folding or hanging of up to 10 clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs',
+                        'Deep cleaning of all surfaces'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs',
+                        'Deep scrubbing of all surfaces'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs',
+                        'Deep cleaning of all appliances'
+                    ]
+                },
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'residential-movein': {
+                title: 'Move-In Cleaning Package',
+                ideal: 'Thorough cleaning of your new home before moving in',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'Includes thorough cleaning and removal of leftover items',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting and wiping of skirting',
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Folding or hanging clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-small': {
+                title: 'Small Office Cleaning Package',
+                ideal: 'Startups, NGOs, clinics, small offices (5-10 staff)',
+                space: '1-3 offices + reception + restroom',
+                staff: '1-2 cleaners',
+                duration: '3-14 hours',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchenette': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-standard': {
+                title: 'Standard Office Cleaning Package',
+                ideal: 'Corporate offices, law firms, real estate firms, small schools',
+                space: '4-8 offices + reception + toilets',
+                staff: '2-3 cleaners',
+                duration: '3-14 hours',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-large': {
+                title: 'Large Office Cleaning Package',
+                ideal: 'Banks, ministries, large NGOs, schools, hospitals (non-theatre)',
+                space: '9-20+ offices, halls & corridors',
+                staff: '4-6 cleaners',
+                duration: '3-14 hours',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-onetime': {
+                title: 'One-Time Deep Cleaning Package',
+                ideal: 'End-of-year cleaning, post-renovation, inspections, reopening',
+                staff: '4-8 cleaners',
+                duration: '3-14 hours',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            }
         };
 
         const pricing = {
@@ -499,10 +991,69 @@
         const submitBtn = document.getElementById('submitBtn');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const successMessage = document.getElementById('successMessage');
+        const modal = document.getElementById('packageModal');
+        const modalContent = document.getElementById('modalContent');
 
         let currentPropertyType = 'residential';
         let currentResidentialPackage = 'standard';
         let currentCommercialPackage = 'small';
+
+        // Modal functions
+        window.showPackageInfo = function(packageId) {
+            const info = packageInfo[packageId];
+            if (!info) return;
+            
+            let html = `<h2>${info.title} <span class="package-badge">Details</span></h2>`;
+            
+            if (info.ideal) {
+                html += `<div class="ideal-for"><strong>Ideal for:</strong> ${info.ideal}</div>`;
+            }
+            
+            if (info.space) {
+                html += `<p><strong>Space Size:</strong> ${info.space}</p>`;
+            }
+            
+            if (info.staff) {
+                html += `<p><strong>Staff Required:</strong> ${info.staff}</p>`;
+            }
+            
+            if (info.duration) {
+                html += `<p><strong>Duration:</strong> ${info.duration}</p>`;
+            }
+            
+            if (info.note) {
+                html += `<p><em>${info.note}</em></p>`;
+            }
+            
+            for (const [section, items] of Object.entries(info.sections)) {
+                html += `<h3>${section}</h3><ul>`;
+                items.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += `</ul>`;
+            }
+            
+            if (info.notes && info.notes.length > 0) {
+                html += `<div class="note"><strong>Important Notes:</strong>`;
+                info.notes.forEach(note => {
+                    html += `<p>• ${note}</p>`;
+                });
+                html += `</div>`;
+            }
+            
+            modalContent.innerHTML = html;
+            modal.style.display = 'block';
+        };
+
+        window.closeModal = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', function() {
             updateAddons();
