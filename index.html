@@ -1132,17 +1132,30 @@
             
             // Send to Google Sheets if enabled
             if (CONFIG.ENABLE_GOOGLE_SHEETS && CONFIG.GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-                fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
-                })
-                .then(() => {
-                    handleSubmitSuccess();
-                })
-                .catch(error => {
+                // Use JSONP approach instead of fetch with no-cors
+                const script = document.createElement('script');
+                const callbackName = 'jsonpCallback_' + Date.now();
+                
+                // Create global callback function
+                window[callbackName] = function(response) {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    
+                    if (response && response.result === 'success') {
+                        handleSubmitSuccess();
+                    } else {
+                        handleSubmitError(new Error(response?.error || 'Unknown error'));
+                    }
+                };
+                
+                // Add callback to URL
+                const url = CONFIG.GOOGLE_SCRIPT_URL + '?callback=' + callbackName + '&' + formData.toString();
+                
+                script.src = url;
+                script.onerror = function(error) {
                     handleSubmitError(error);
-                });
+                };
+                document.body.appendChild(script);
             } else {
                 // Development mode - simulate success
                 setTimeout(() => {
