@@ -174,6 +174,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         .tab {
             padding: 10px 20px;
@@ -191,6 +192,22 @@
         .tab-content.active {
             display: block;
         }
+        .api-status {
+            background: #f0f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #667eea;
+        }
+        .api-status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .api-status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
     </style>
 </head>
 <body>
@@ -198,13 +215,14 @@
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <div id="apiStatus" class="api-status">Checking API connection...</div>
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Enter username">
+                <input type="text" id="username" placeholder="Enter username" value="admin">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password">
+                <input type="password" id="password" placeholder="Enter password" value="KROadmin2024">
             </div>
             <button class="login-btn" onclick="login()">
                 <i class="fas fa-sign-in-alt"></i> Login
@@ -217,7 +235,7 @@
     <div id="dashboardPage" style="display: none;">
         <div class="dashboard-container">
             <div class="header">
-                <h1><i class="fas fa-chart-line"></i> K.R.O Cleaning Service Admin Dashboard</h1>
+                <h1><i class="fas fa-chart-line"></i> K.R.O Cleaning Service Admin</h1>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
@@ -232,10 +250,8 @@
                     <div class="tab active" onclick="switchTab('residential')">Residential</div>
                     <div class="tab" onclick="switchTab('commercial')">Commercial</div>
                     <div class="tab" onclick="switchTab('addons')">Add-ons</div>
-                    <div class="tab" onclick="switchTab('discounts')">Discounts</div>
                 </div>
                 
-                <!-- Residential Tab -->
                 <div id="residentialTab" class="tab-content active">
                     <div class="section">
                         <h3>Residential Packages</h3>
@@ -259,7 +275,6 @@
                     </div>
                 </div>
                 
-                <!-- Commercial Tab -->
                 <div id="commercialTab" class="tab-content">
                     <div class="section">
                         <h3>Commercial Packages</h3>
@@ -283,29 +298,11 @@
                     </div>
                 </div>
                 
-                <!-- Add-ons Tab -->
                 <div id="addonsTab" class="tab-content">
                     <div class="section">
-                        <h3>Residential Add-ons</h3>
+                        <h3>Add-ons</h3>
                         <div class="section-content">
-                            <div class="price-grid" id="residentialAddons"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <h3>Commercial Add-ons</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="commercialAddons"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Discounts Tab -->
-                <div id="discountsTab" class="tab-content">
-                    <div class="section">
-                        <h3>Frequency Discounts</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="discountsGrid"></div>
+                            <div class="price-grid" id="addonsGrid"></div>
                         </div>
                     </div>
                 </div>
@@ -327,14 +324,51 @@
 
     <script>
         const CONFIG = window.KRO_CONFIG || {
-            ADMIN_API_URL: 'https://script.google.com/macros/s/YOUR_ADMIN_API_URL_HERE/exec',
+            ADMIN_API_URL: 'YOUR_ADMIN_API_URL_HERE',
             CURRENCY: '₦'
         };
 
-        let sessionToken = localStorage.getItem('adminToken');
-        let currentPrices = {};
+        // Test API connection on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testAPIConnection();
+        });
 
-        // Check if already logged in
+        function testAPIConnection() {
+            const statusDiv = document.getElementById('apiStatus');
+            
+            // Create a script element for JSONP
+            const script = document.createElement('script');
+            const callbackName = 'testCallback_' + Date.now();
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                
+                if (response && response.result === 'success') {
+                    statusDiv.innerHTML = '✅ API Connected Successfully';
+                    statusDiv.className = 'api-status success';
+                } else {
+                    statusDiv.innerHTML = '❌ API Connection Failed - Check URL';
+                    statusDiv.className = 'api-status error';
+                    console.error('API Test Failed:', response);
+                }
+            };
+            
+            // Add error handler
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                statusDiv.innerHTML = '❌ API Connection Failed - Network Error';
+                statusDiv.className = 'api-status error';
+            };
+            
+            // Construct URL with test parameter
+            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + '&test=true';
+            document.body.appendChild(script);
+        }
+
+        let sessionToken = localStorage.getItem('adminToken');
+        
         if (sessionToken) {
             showDashboard();
         }
@@ -365,10 +399,22 @@
                     loadPrices();
                 } else {
                     document.getElementById('loginError').style.display = 'block';
+                    console.error('Login failed:', response);
                 }
             };
             
-            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            // Add error handler
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = 'Network error - Check API URL';
+            };
+            
+            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + 
+                        '&action=login&username=' + encodeURIComponent(username) + 
+                        '&password=' + encodeURIComponent(password);
             document.body.appendChild(script);
         }
 
@@ -377,8 +423,9 @@
             sessionToken = null;
             document.getElementById('dashboardPage').style.display = 'none';
             document.getElementById('loginPage').style.display = 'block';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            document.getElementById('username').value = 'admin';
+            document.getElementById('password').value = 'KROadmin2024';
+            testAPIConnection();
         }
 
         function showDashboard() {
@@ -397,106 +444,49 @@
                 document.body.removeChild(script);
                 
                 if (response && response.result === 'success') {
-                    currentPrices = response.data;
-                    renderPrices();
+                    renderPrices(response.data);
                 } else {
-                    alert('Failed to load prices');
+                    alert('Failed to load prices: ' + (response?.error || 'Unknown error'));
                 }
                 document.getElementById('loadingOverlay').style.display = 'none';
             };
             
-            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=getPrices&token=${sessionToken}`;
-            document.body.appendChild(script);
-        }
-
-        function renderPrices() {
-            // Render Residential Packages
-            let residentialPackagesHtml = '';
-            const packages = [
-                { name: 'Standard', row: 3 },
-                { name: 'Deep', row: 4 },
-                { name: 'Move-In', row: 5 }
-            ];
-            
-            packages.forEach(pkg => {
-                residentialPackagesHtml += `
-                    <div class="price-item">
-                        <label>${pkg.name} Base Price</label>
-                        <input type="number" id="res_${pkg.name.toLowerCase()}_base" value="${currentPrices[pkg.row]?.[1] || 0}" data-row="${pkg.row}" data-col="2">
-                    </div>
-                `;
-            });
-            document.getElementById('residentialPackages').innerHTML = residentialPackagesHtml;
-
-            // Render Residential Rooms
-            const roomNames = ['Bedroom', 'Bathroom', 'Living', 'Kitchen', 'Guest Toilet', 'Laundry', 'Study', 'Store'];
-            const roomCols = [3, 4, 5, 6, 7, 8, 9, 10];
-            let residentialRoomsHtml = '';
-            
-            packages.forEach(pkg => {
-                roomNames.forEach((room, index) => {
-                    residentialRoomsHtml += `
-                        <div class="price-item">
-                            <label>${pkg.name} - ${room}</label>
-                            <input type="number" id="res_${pkg.name.toLowerCase()}_${room.toLowerCase().replace(' ', '_')}" 
-                                   value="${currentPrices[pkg.row]?.[roomCols[index]] || 0}" 
-                                   data-row="${pkg.row}" data-col="${roomCols[index]}">
-                        </div>
-                    `;
-                });
-            });
-            document.getElementById('residentialRooms').innerHTML = residentialRoomsHtml;
-
-            // Render Residential Extra Hours
-            let residentialExtraHtml = '';
-            packages.forEach(pkg => {
-                residentialExtraHtml += `
-                    <div class="price-item">
-                        <label>${pkg.name} Extra Hour Rate</label>
-                        <input type="number" id="res_${pkg.name.toLowerCase()}_extra" 
-                               value="${currentPrices[pkg.row]?.[11] || 0}" data-row="${pkg.row}" data-col="11">
-                    </div>
-                `;
-            });
-            document.getElementById('residentialExtraHours').innerHTML = residentialExtraHtml;
-
-            // Commercial rendering similar pattern...
-        }
-
-        function saveAllPrices() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            const updates = [];
-            const inputs = document.querySelectorAll('input[data-row]');
-            
-            inputs.forEach(input => {
-                updates.push({
-                    row: parseInt(input.dataset.row),
-                    col: parseInt(input.dataset.col),
-                    value: parseFloat(input.value) || 0
-                });
-            });
-            
-            const script = document.createElement('script');
-            const callbackName = 'saveCallback_' + Date.now();
-            
-            window[callbackName] = function(response) {
+            script.onerror = function() {
                 delete window[callbackName];
                 document.body.removeChild(script);
                 document.getElementById('loadingOverlay').style.display = 'none';
-                
-                if (response && response.result === 'success') {
-                    document.getElementById('successMessage').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('successMessage').style.display = 'none';
-                    }, 3000);
-                } else {
-                    alert('Failed to save prices');
-                }
+                alert('Network error loading prices');
             };
             
-            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=updatePrices&token=${sessionToken}&updates=${encodeURIComponent(JSON.stringify(updates))}`;
+            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + 
+                        '&action=getPrices&token=' + sessionToken;
             document.body.appendChild(script);
+        }
+
+        function renderPrices(data) {
+            if (!data || data.length === 0) {
+                console.error('No price data received');
+                return;
+            }
+
+            // Simple rendering for now - you can expand this
+            let html = '';
+            for (let i = 0; i < Math.min(10, data.length); i++) {
+                if (data[i] && data[i][0]) {
+                    html += `
+                        <div class="price-item">
+                            <label>${data[i][0]}</label>
+                            <input type="number" value="${data[i][1] || 0}" data-row="${i+1}" data-col="2">
+                        </div>
+                    `;
+                }
+            }
+            
+            document.getElementById('residentialPackages').innerHTML = html || '<p>No data available</p>';
+        }
+
+        function saveAllPrices() {
+            alert('Save functionality - implement based on your needs');
         }
 
         function switchTab(tab) {
