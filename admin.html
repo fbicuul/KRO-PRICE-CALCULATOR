@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.R.O Cleaning Service - Admin</title>
+    <title>K.R.O Cleaning Service - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="config.js"></script>
     
@@ -14,68 +14,629 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
-        .redirect-box {
+        
+        /* Login Page Styles */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
             background: white;
-            padding: 40px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 100%;
+            padding: 40px;
+        }
+        .login-container h2 {
+            color: #667eea;
+            margin-bottom: 30px;
             text-align: center;
+            font-size: 1.8em;
         }
-        h2 { color: #667eea; margin-bottom: 20px; }
-        p { color: #555; margin-bottom: 30px; line-height: 1.6; }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        .login-container h2 i {
+            margin-right: 10px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .form-group {
+            margin-bottom: 20px;
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            text-decoration: none;
+            border: none;
             border-radius: 8px;
-            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
-        .btn:hover { opacity: 0.9; }
+        .login-btn:hover {
+            opacity: 0.9;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: none;
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dashboard-header h1 {
+            font-size: 1.8em;
+        }
+        .dashboard-header h1 i {
+            margin-right: 10px;
+        }
+        .logout-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .dashboard-content {
+            padding: 30px;
+        }
+        
+        /* Tab Styles */
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .tab {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .tab:hover {
+            background: #e0e0e0;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Section Styles */
+        .section {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .price-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .price-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+        .price-item input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .price-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Save Button */
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .save-btn:hover {
+            background: #45a049;
+        }
+        .save-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Messages */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-spinner {
+            text-align: center;
+        }
+        .loading-spinner i {
+            font-size: 50px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .loading-spinner h3 {
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 50px auto;
+                padding: 30px;
+            }
+            .dashboard-header h1 {
+                font-size: 1.4em;
+            }
+            .tab {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="redirect-box">
-        <h2><i class="fas fa-cog"></i> K.R.O Admin</h2>
-        <div class="spinner"></div>
-        <p>Redirecting to secure admin login page...</p>
-        <p><small>If you are not redirected automatically, click the button below.</small></p>
-        <a href="#" class="btn" id="redirectBtn">Go to Admin Login</a>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h3>Loading...</h3>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <h2><i class="fas fa-lock"></i> Admin Login</h2>
+        <div id="loginError" class="error-message"></div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" value="KROadmin2024" required>
+            </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> K.R.O Cleaning Service Admin</h1>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+        
+        <div class="dashboard-content">
+            <div id="successMessage" class="success-message">
+                <i class="fas fa-check-circle"></i> Prices updated successfully!
+            </div>
+            
+            <div class="tab-container">
+                <button class="tab active" onclick="switchTab('residential')">Residential Packages</button>
+                <button class="tab" onclick="switchTab('commercial')">Commercial Packages</button>
+                <button class="tab" onclick="switchTab('addons')">Add-ons</button>
+                <button class="tab" onclick="switchTab('discounts')">Discounts</button>
+            </div>
+            
+            <!-- Residential Tab -->
+            <div id="residentialTab" class="tab-content" style="display: block;">
+                <div class="section">
+                    <h3>Residential Packages & Room Rates</h3>
+                    <div class="price-grid" id="residentialPrices"></div>
+                </div>
+            </div>
+            
+            <!-- Commercial Tab -->
+            <div id="commercialTab" class="tab-content" style="display: none;">
+                <div class="section">
+                    <h3>Commercial Packages & Room Rates</h3>
+                    <div class="price-grid" id="commercialPrices"></div>
+                </div>
+            </div>
+            
+            <!-- Add-ons Tab -->
+            <div id="addonsTab" class="tab-content" style="display: none;">
+                <div class="section">
+                    <h3>Additional Services</h3>
+                    <div class="price-grid" id="addonsPrices"></div>
+                </div>
+            </div>
+            
+            <!-- Discounts Tab -->
+            <div id="discountsTab" class="tab-content" style="display: none;">
+                <div class="section">
+                    <h3>Frequency Discounts</h3>
+                    <div class="price-grid" id="discountsPrices"></div>
+                </div>
+            </div>
+            
+            <button class="save-btn" onclick="saveAllPrices()">
+                <i class="fas fa-save"></i> Save All Changes
+            </button>
+        </div>
     </div>
 
     <script>
         const CONFIG = window.KRO_CONFIG || {
-            API_URL: 'https://script.google.com/macros/s/AKfycbwFUdZcSWWcfXHhqNg9Y1L0EA-mwv9-qcS3UQqk-s0J0XEYbBA9O86yQ9S6nS6I6sM/exec'
+            API_URL: 'https://script.google.com/macros/s/AKfycbwEmtf3XfhBfGw9RJriRbHs5_1A3mbaN31IvE5lmhR6lKRz25DKM9pvDFTcm_ZKcxQ/exec',
+            API_SECRET_TOKEN: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74',
+            CURRENCY: '₦'
         };
 
-        // Set the redirect URL
-        const adminUrl = CONFIG.API_URL + '?action=admin';
-        document.getElementById('redirectBtn').href = adminUrl;
+        let authToken = localStorage.getItem('adminToken');
+        let pricingData = null;
 
-        // Redirect after 2 seconds
-        setTimeout(function() {
-            window.location.href = adminUrl;
-        }, 2000);
+        // Check if already logged in
+        if (authToken) {
+            showDashboard();
+            loadPricingData();
+        }
+
+        // Handle login
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loginError').style.display = 'none';
+            
+            try {
+                // Call login API
+                const response = await fetch(`${CONFIG.API_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+                const data = await response.json();
+                
+                if (data.success && data.token) {
+                    authToken = data.token;
+                    localStorage.setItem('adminToken', authToken);
+                    showDashboard();
+                    loadPricingData();
+                } else {
+                    document.getElementById('loginError').textContent = data.error || 'Invalid username or password';
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('loginError').textContent = 'Login failed: ' + error.message;
+                document.getElementById('loginError').style.display = 'block';
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('adminToken');
+            authToken = null;
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('username').value = 'admin';
+            document.getElementById('password').value = 'KROadmin2024';
+        }
+
+        // Load pricing data
+        async function loadPricingData() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?action=getPricing&token=${authToken}`);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    pricingData = data.data;
+                    renderPricingData();
+                } else {
+                    alert('Failed to load pricing data: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error loading pricing data: ' + error.message);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // Render pricing data
+        function renderPricingData() {
+            if (!pricingData || !pricingData.rows) return;
+            
+            const rows = pricingData.rows;
+            
+            // Residential Prices
+            let residentialHtml = '';
+            for (let i = 3; i <= 5; i++) {
+                if (rows[i]) {
+                    residentialHtml += `
+                        <div class="price-item">
+                            <label>${rows[i][0] || 'Package'} - Base Price</label>
+                            <input type="number" id="res_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Bedroom</label>
+                            <input type="number" id="res_${i}_bedroom" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Bathroom</label>
+                            <input type="number" id="res_${i}_bathroom" value="${rows[i][3] || 0}" data-row="${i}" data-col="4">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Living</label>
+                            <input type="number" id="res_${i}_living" value="${rows[i][4] || 0}" data-row="${i}" data-col="5">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Kitchen</label>
+                            <input type="number" id="res_${i}_kitchen" value="${rows[i][5] || 0}" data-row="${i}" data-col="6">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Guest Toilet</label>
+                            <input type="number" id="res_${i}_guest" value="${rows[i][6] || 0}" data-row="${i}" data-col="7">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Laundry</label>
+                            <input type="number" id="res_${i}_laundry" value="${rows[i][7] || 0}" data-row="${i}" data-col="8">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Study</label>
+                            <input type="number" id="res_${i}_study" value="${rows[i][8] || 0}" data-row="${i}" data-col="9">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Store</label>
+                            <input type="number" id="res_${i}_store" value="${rows[i][9] || 0}" data-row="${i}" data-col="10">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Office Space</label>
+                            <input type="number" id="res_${i}_office" value="${rows[i][10] || 0}" data-row="${i}" data-col="11">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Extra Hour</label>
+                            <input type="number" id="res_${i}_extra" value="${rows[i][11] || 0}" data-row="${i}" data-col="12">
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('residentialPrices').innerHTML = residentialHtml || '<p>No residential data found</p>';
+            
+            // Commercial Prices
+            let commercialHtml = '';
+            for (let i = 9; i <= 12; i++) {
+                if (rows[i]) {
+                    commercialHtml += `
+                        <div class="price-item">
+                            <label>${rows[i][0] || 'Package'} - Base Price</label>
+                            <input type="number" id="com_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Office</label>
+                            <input type="number" id="com_${i}_office" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Restroom</label>
+                            <input type="number" id="com_${i}_restroom" value="${rows[i][3] || 0}" data-row="${i}" data-col="4">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Reception</label>
+                            <input type="number" id="com_${i}_reception" value="${rows[i][4] || 0}" data-row="${i}" data-col="5">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Kitchenette</label>
+                            <input type="number" id="com_${i}_kitchenette" value="${rows[i][5] || 0}" data-row="${i}" data-col="6">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Canteen</label>
+                            <input type="number" id="com_${i}_canteen" value="${rows[i][6] || 0}" data-row="${i}" data-col="7">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Lounge</label>
+                            <input type="number" id="com_${i}_lounge" value="${rows[i][7] || 0}" data-row="${i}" data-col="8">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Study/Library</label>
+                            <input type="number" id="com_${i}_study" value="${rows[i][8] || 0}" data-row="${i}" data-col="9">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Laundry Room</label>
+                            <input type="number" id="com_${i}_laundry" value="${rows[i][9] || 0}" data-row="${i}" data-col="10">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Store</label>
+                            <input type="number" id="com_${i}_store" value="${rows[i][10] || 0}" data-row="${i}" data-col="11">
+                        </div>
+                        <div class="price-item">
+                            <label>${rows[i][0]} - Extra Hour</label>
+                            <input type="number" id="com_${i}_extra" value="${rows[i][11] || 0}" data-row="${i}" data-col="12">
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('commercialPrices').innerHTML = commercialHtml || '<p>No commercial data found</p>';
+            
+            // Add-ons
+            let addonsHtml = '';
+            for (let i = 16; i <= 49; i++) {
+                if (rows[i] && rows[i][1]) {
+                    addonsHtml += `
+                        <div class="price-item">
+                            <label>${rows[i][1]}</label>
+                            <input type="number" id="addon_${i}" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('addonsPrices').innerHTML = addonsHtml || '<p>No add-ons found</p>';
+            
+            // Discounts
+            let discountsHtml = '';
+            for (let i = 59; i <= 65; i++) {
+                if (rows[i] && rows[i][0]) {
+                    discountsHtml += `
+                        <div class="price-item">
+                            <label>${rows[i][0]} Discount (%)</label>
+                            <input type="number" id="discount_${i}" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('discountsPrices').innerHTML = discountsHtml || '<p>No discounts found</p>';
+        }
+
+        // Save all prices
+        async function saveAllPrices() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            const updates = [];
+            
+            // Collect all input values
+            document.querySelectorAll('input[data-row]').forEach(input => {
+                updates.push({
+                    row: parseInt(input.dataset.row),
+                    col: parseInt(input.dataset.col),
+                    value: parseFloat(input.value) || 0
+                });
+            });
+            
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?action=updatePrices`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        token: authToken,
+                        updates: JSON.stringify(updates)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('Error saving prices: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error saving prices: ' + error.message);
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show selected tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+        }
     </script>
 </body>
 </html>
