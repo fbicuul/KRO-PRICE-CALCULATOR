@@ -28,25 +28,9 @@
             color: white;
             padding: 40px;
             text-align: center;
-            position: relative;
         }
         header h1 { font-size: 2.5em; margin-bottom: 10px; }
         header h1 i { margin-right: 10px; }
-        .admin-link {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border: 2px solid white;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .admin-link:hover {
-            background: white;
-            color: #667eea;
-        }
         .form-section { padding: 30px; border-bottom: 1px solid #eee; }
         .form-section h2 { color: #333; margin-bottom: 20px; }
         .form-grid {
@@ -399,11 +383,6 @@
             #totalPrice { font-size: 2em; }
             .modal-content { margin: 20px; padding: 20px; }
             .modal ul { grid-template-columns: 1fr; }
-            .admin-link {
-                position: static;
-                display: inline-block;
-                margin-top: 20px;
-            }
         }
     </style>
 </head>
@@ -412,7 +391,6 @@
         <header>
             <h1><i class="fas fa-broom"></i> K.R.O Cleaning Service</h1>
             <p>Get an instant price quote for your cleaning needs</p>
-            <a href="admin.html" class="admin-link"><i class="fas fa-cog"></i> Admin</a>
         </header>
 
         <form id="pricingForm">
@@ -638,7 +616,7 @@
     <script>
         // CONFIG - Using single API URL
         const CONFIG = window.KRO_CONFIG || {
-            API_URL: 'https://script.google.com/macros/s/AKfycbwFUdZcSWWcfXHhqNg9Y1L0EA-mwv9-qcS3UQqk-s0J0XEYbBA9O86yQ9S6nS6I6sM/exec',
+            API_URL: 'https://script.google.com/macros/s/AKfycbwEmtf3XfhBfGw9RJriRbHs5_1A3mbaN31IvE5lmhR6lKRz25DKM9pvDFTcm_ZKcxQ/exec',
             API_SECRET_TOKEN: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74',
             CURRENCY: '₦',
             COMPANY_PHONE: '+234 704 918 9964'
@@ -1043,7 +1021,8 @@
                     extraHourRate: 2800,
                     rooms: { 
                         bedroom: 1300, bathroom: 1000, living: 1200, kitchen: 1500,
-                        guestToilet: 800, laundry: 800, study: 800, store: 800 
+                        guestToilet: 800, laundry: 800, study: 800, store: 800,
+                        office: 800
                     } 
                 },
                 deep: { 
@@ -1051,7 +1030,8 @@
                     extraHourRate: 3800,
                     rooms: { 
                         bedroom: 4400, bathroom: 4100, living: 4200, kitchen: 4600,
-                        guestToilet: 2800, laundry: 5600, study: 5600, store: 5700 
+                        guestToilet: 2800, laundry: 5600, study: 5600, store: 5700,
+                        office: 4400
                     } 
                 },
                 movein: { 
@@ -1059,7 +1039,8 @@
                     extraHourRate: 3800,
                     rooms: { 
                         bedroom: 5000, bathroom: 4800, living: 5000, kitchen: 5200,
-                        guestToilet: 3300, laundry: 7300, study: 7800, store: 6800 
+                        guestToilet: 3300, laundry: 7300, study: 7800, store: 6800,
+                        office: 5800
                     } 
                 }
             },
@@ -1067,22 +1048,38 @@
                 small: { 
                     base: 45000, 
                     extraHourRate: 5800,
-                    rooms: { office: 10000, restroom: 19000, reception: 16000 } 
+                    rooms: { 
+                        office: 10000, restroom: 19000, reception: 16000,
+                        kitchenette: 5000, canteen: 14500, lounge: 10000,
+                        studyLibrary: 8000, laundryRoom: 10000, store: 8000
+                    } 
                 },
                 standard: { 
                     base: 96000, 
                     extraHourRate: 9500,
-                    rooms: { office: 27000, restroom: 36000, reception: 33000 } 
+                    rooms: { 
+                        office: 27000, restroom: 36000, reception: 33000,
+                        kitchenette: 9000, canteen: 20500, lounge: 19000,
+                        studyLibrary: 18000, laundryRoom: 20000, store: 18000
+                    } 
                 },
                 large: { 
                     base: 150000, 
                     extraHourRate: 14000,
-                    rooms: { office: 45000, restroom: 54000, reception: 51000 } 
+                    rooms: { 
+                        office: 45000, restroom: 54000, reception: 51000,
+                        kitchenette: 15000, canteen: 35000, lounge: 29900,
+                        studyLibrary: 29000, laundryRoom: 31000, store: 29500
+                    } 
                 },
                 onetime: { 
                     base: 249000, 
                     extraHourRate: 20000,
-                    rooms: { office: 78000, restroom: 87000, reception: 84000 } 
+                    rooms: { 
+                        office: 78000, restroom: 87000, reception: 84000,
+                        kitchenette: 22500, canteen: 41000, lounge: 34000,
+                        studyLibrary: 0, laundryRoom: 36800, store: 35000
+                    } 
                 }
             }
         };
@@ -1315,22 +1312,22 @@
                 
                 roomCosts = (offices * pkg.rooms.office) + (restrooms * pkg.rooms.restroom) + 
                            (reception * (pkg.rooms.reception || 0)) +
-                           (kitchenette * (pkg.rooms.kitchenette || 5000)) +
-                           (canteen * (pkg.rooms.canteen || 14500)) +
-                           (lounge * (pkg.rooms.lounge || 10000)) +
-                           (studyLibrary * (pkg.rooms.studyLibrary || 8000)) +
-                           (laundryRoom * (pkg.rooms.laundryRoom || 10000)) +
-                           (storeRoom * (pkg.rooms.storeRoom || 8000));
+                           (kitchenette * (pkg.rooms.kitchenette || 0)) +
+                           (canteen * (pkg.rooms.canteen || 0)) +
+                           (lounge * (pkg.rooms.lounge || 0)) +
+                           (studyLibrary * (pkg.rooms.studyLibrary || 0)) +
+                           (laundryRoom * (pkg.rooms.laundryRoom || 0)) +
+                           (storeRoom * (pkg.rooms.store || 0));
                 
                 if (offices > 0) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg.rooms.office });
                 if (restrooms > 0) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg.rooms.restroom });
                 if (reception > 0) breakdown.push({ item: 'Reception', cost: pkg.rooms.reception });
-                if (kitchenette > 0) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * 5000 });
-                if (canteen > 0) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * 14500 });
-                if (lounge > 0) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * 10000 });
-                if (studyLibrary > 0) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * 8000 });
-                if (laundryRoom > 0) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * 10000 });
-                if (storeRoom > 0) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * 8000 });
+                if (kitchenette > 0) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * pkg.rooms.kitchenette });
+                if (canteen > 0) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * pkg.rooms.canteen });
+                if (lounge > 0) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * pkg.rooms.lounge });
+                if (studyLibrary > 0) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * pkg.rooms.studyLibrary });
+                if (laundryRoom > 0) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * pkg.rooms.laundryRoom });
+                if (storeRoom > 0) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * pkg.rooms.store });
             }
             
             // Calculate hours and required cleaners
@@ -1637,7 +1634,6 @@
             }
             return isValid;
         }
-        
 
         function submitForm() {
             if (!validateForm()) return;
