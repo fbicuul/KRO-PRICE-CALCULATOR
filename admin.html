@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.R.O Cleaning Service - Admin Dashboard</title>
+    <title>K.R.O Cleaning Service - Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="config.js"></script>
     
@@ -14,488 +14,68 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-        }
-        .login-container, .dashboard-container {
-            max-width: 1200px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        .login-box {
-            padding: 40px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .login-box h2 {
-            color: #667eea;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .login-btn:hover { opacity: 0.9; }
-        .error-message {
-            color: #ff6b6b;
-            text-align: center;
-            margin-top: 10px;
-            display: none;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 { font-size: 1.8em; }
-        .logout-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .dashboard-content {
-            padding: 30px;
-        }
-        .section {
-            margin-bottom: 40px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .section h3 {
-            background: #f8f9ff;
-            padding: 15px 20px;
-            margin: 0;
-            color: #667eea;
-            border-bottom: 2px solid #667eea;
-        }
-        .section-content {
-            padding: 20px;
-        }
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .price-item {
-            background: #f8f9ff;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .price-item label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
-        }
-        .price-item input {
-            width: 100%;
-            padding: 8px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .price-item input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .save-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .save-btn:hover { opacity: 0.9; }
-        .success-message {
-            background: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
-        }
-        .loading-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9);
-            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
         }
-        .loading-spinner { text-align: center; }
-        .loading-spinner i {
-            font-size: 50px;
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-        .tab-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .tab {
-            padding: 10px 20px;
-            background: #f0f0f0;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .tab.active {
-            background: #667eea;
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .api-status {
-            background: #f0f3ff;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        .redirect-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
             text-align: center;
-            color: #667eea;
         }
-        .api-status.error {
-            background: #ffebee;
-            color: #c62828;
+        h2 { color: #667eea; margin-bottom: 20px; }
+        p { color: #555; margin-bottom: 30px; line-height: 1.6; }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
-        .api-status.success {
-            background: #e8f5e9;
-            color: #2e7d32;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="loginPage" class="login-container">
-        <div class="login-box">
-            <h2><i class="fas fa-lock"></i> Admin Login</h2>
-            <div id="apiStatus" class="api-status">Checking API connection...</div>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Enter username" value="admin">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" value="KROadmin2024">
-            </div>
-            <button class="login-btn" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-            <div class="error-message" id="loginError">Invalid username or password</div>
-        </div>
-    </div>
-
-    <!-- Dashboard Page -->
-    <div id="dashboardPage" style="display: none;">
-        <div class="dashboard-container">
-            <div class="header">
-                <h1><i class="fas fa-chart-line"></i> K.R.O Cleaning Service Admin</h1>
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-            
-            <div class="dashboard-content">
-                <div class="success-message" id="successMessage">
-                    <i class="fas fa-check-circle"></i> Prices updated successfully!
-                </div>
-                
-                <div class="tab-container">
-                    <div class="tab active" onclick="switchTab('residential')">Residential</div>
-                    <div class="tab" onclick="switchTab('commercial')">Commercial</div>
-                    <div class="tab" onclick="switchTab('addons')">Add-ons</div>
-                </div>
-                
-                <div id="residentialTab" class="tab-content active">
-                    <div class="section">
-                        <h3>Residential Packages</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="residentialPackages"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <h3>Residential Room Rates</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="residentialRooms"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <h3>Residential Extra Hour Rates</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="residentialExtraHours"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="commercialTab" class="tab-content">
-                    <div class="section">
-                        <h3>Commercial Packages</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="commercialPackages"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <h3>Commercial Room Rates</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="commercialRooms"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <h3>Commercial Extra Hour Rates</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="commercialExtraHours"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="addonsTab" class="tab-content">
-                    <div class="section">
-                        <h3>Add-ons</h3>
-                        <div class="section-content">
-                            <div class="price-grid" id="addonsGrid"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="save-btn" onclick="saveAllPrices()">
-                    <i class="fas fa-save"></i> Save All Changes
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i>
-            <h3>Loading...</h3>
-        </div>
+    <div class="redirect-box">
+        <h2><i class="fas fa-cog"></i> K.R.O Admin</h2>
+        <div class="spinner"></div>
+        <p>Redirecting to secure admin login page...</p>
+        <p><small>If you are not redirected automatically, click the button below.</small></p>
+        <a href="#" class="btn" id="redirectBtn">Go to Admin Login</a>
     </div>
 
     <script>
         const CONFIG = window.KRO_CONFIG || {
-            ADMIN_API_URL: 'YOUR_ADMIN_API_URL_HERE',
-            CURRENCY: '₦'
+            API_URL: 'https://script.google.com/macros/s/AKfycbwFUdZcSWWcfXHhqNg9Y1L0EA-mwv9-qcS3UQqk-s0J0XEYbBA9O86yQ9S6nS6I6sM/exec'
         };
 
-        // Test API connection on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            testAPIConnection();
-        });
+        // Set the redirect URL
+        const adminUrl = CONFIG.API_URL + '?action=admin';
+        document.getElementById('redirectBtn').href = adminUrl;
 
-        function testAPIConnection() {
-            const statusDiv = document.getElementById('apiStatus');
-            
-            // Create a script element for JSONP
-            const script = document.createElement('script');
-            const callbackName = 'testCallback_' + Date.now();
-            
-            window[callbackName] = function(response) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                
-                if (response && response.result === 'success') {
-                    statusDiv.innerHTML = '✅ API Connected Successfully';
-                    statusDiv.className = 'api-status success';
-                } else {
-                    statusDiv.innerHTML = '❌ API Connection Failed - Check URL';
-                    statusDiv.className = 'api-status error';
-                    console.error('API Test Failed:', response);
-                }
-            };
-            
-            // Add error handler
-            script.onerror = function() {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                statusDiv.innerHTML = '❌ API Connection Failed - Network Error';
-                statusDiv.className = 'api-status error';
-            };
-            
-            // Construct URL with test parameter
-            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + '&test=true';
-            document.body.appendChild(script);
-        }
-
-        let sessionToken = localStorage.getItem('adminToken');
-        
-        if (sessionToken) {
-            showDashboard();
-        }
-
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                document.getElementById('loginError').style.display = 'block';
-                return;
-            }
-            
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            const script = document.createElement('script');
-            const callbackName = 'loginCallback_' + Date.now();
-            
-            window[callbackName] = function(response) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                
-                if (response && response.result === 'success') {
-                    sessionToken = response.token;
-                    localStorage.setItem('adminToken', response.token);
-                    showDashboard();
-                    loadPrices();
-                } else {
-                    document.getElementById('loginError').style.display = 'block';
-                    console.error('Login failed:', response);
-                }
-            };
-            
-            // Add error handler
-            script.onerror = function() {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginError').textContent = 'Network error - Check API URL';
-            };
-            
-            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + 
-                        '&action=login&username=' + encodeURIComponent(username) + 
-                        '&password=' + encodeURIComponent(password);
-            document.body.appendChild(script);
-        }
-
-        function logout() {
-            localStorage.removeItem('adminToken');
-            sessionToken = null;
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('loginPage').style.display = 'block';
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'KROadmin2024';
-            testAPIConnection();
-        }
-
-        function showDashboard() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-        }
-
-        function loadPrices() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            const script = document.createElement('script');
-            const callbackName = 'pricesCallback_' + Date.now();
-            
-            window[callbackName] = function(response) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                
-                if (response && response.result === 'success') {
-                    renderPrices(response.data);
-                } else {
-                    alert('Failed to load prices: ' + (response?.error || 'Unknown error'));
-                }
-                document.getElementById('loadingOverlay').style.display = 'none';
-            };
-            
-            script.onerror = function() {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert('Network error loading prices');
-            };
-            
-            script.src = CONFIG.ADMIN_API_URL + '?callback=' + callbackName + 
-                        '&action=getPrices&token=' + sessionToken;
-            document.body.appendChild(script);
-        }
-
-        function renderPrices(data) {
-            if (!data || data.length === 0) {
-                console.error('No price data received');
-                return;
-            }
-
-            // Simple rendering for now - you can expand this
-            let html = '';
-            for (let i = 0; i < Math.min(10, data.length); i++) {
-                if (data[i] && data[i][0]) {
-                    html += `
-                        <div class="price-item">
-                            <label>${data[i][0]}</label>
-                            <input type="number" value="${data[i][1] || 0}" data-row="${i+1}" data-col="2">
-                        </div>
-                    `;
-                }
-            }
-            
-            document.getElementById('residentialPackages').innerHTML = html || '<p>No data available</p>';
-        }
-
-        function saveAllPrices() {
-            alert('Save functionality - implement based on your needs');
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
-            document.getElementById(`${tab}Tab`).classList.add('active');
-        }
+        // Redirect after 2 seconds
+        setTimeout(function() {
+            window.location.href = adminUrl;
+        }, 2000);
     </script>
 </body>
 </html>
