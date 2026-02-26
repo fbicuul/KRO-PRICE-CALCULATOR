@@ -31,6 +31,21 @@
         }
         header h1 { font-size: 2.5em; margin-bottom: 10px; }
         header h1 i { margin-right: 10px; }
+        .admin-link {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid white;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-link:hover {
+            background: white;
+            color: #667eea;
+        }
         .form-section { padding: 30px; border-bottom: 1px solid #eee; }
         .form-section h2 { color: #333; margin-bottom: 20px; }
         .form-grid {
@@ -133,9 +148,9 @@
         }
         .addons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             padding: 10px;
             border: 1px solid #e0e0e0;
@@ -144,7 +159,7 @@
         .addon-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             cursor: pointer;
@@ -193,7 +208,7 @@
             background: white;
             border-radius: 10px;
             text-align: left;
-            max-width: 500px;
+            max-width: 600px;
             margin: 20px auto 0;
         }
         .breakdown-item {
@@ -208,6 +223,14 @@
             border-top: 2px solid #f0f0f0;
             margin-top: 10px;
             padding-top: 15px;
+        }
+        .info-badge {
+            background: #f0f3ff;
+            color: #667eea;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-left: 10px;
         }
         .submit-btn {
             display: block;
@@ -268,7 +291,7 @@
             margin: 50px auto;
             padding: 30px;
             border-radius: 15px;
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
             animation: slideIn 0.3s ease-out;
         }
@@ -375,6 +398,11 @@
             #totalPrice { font-size: 2em; }
             .modal-content { margin: 20px; padding: 20px; }
             .modal ul { grid-template-columns: 1fr; }
+            .admin-link {
+                position: static;
+                display: inline-block;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -383,6 +411,7 @@
         <header>
             <h1><i class="fas fa-broom"></i> K.R.O Cleaning Service</h1>
             <p>Get an instant price quote for your cleaning needs</p>
+            <a href="admin.html" class="admin-link"><i class="fas fa-cog"></i> Admin</a>
         </header>
 
         <form id="pricingForm">
@@ -458,19 +487,35 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="bedrooms">Bedrooms:</label>
-                        <input type="number" id="bedrooms" min="0" value="0">
+                        <input type="number" id="bedrooms" min="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="bathrooms">Bathrooms:</label>
-                        <input type="number" id="bathrooms" min="0" value="0">
+                        <input type="number" id="bathrooms" min="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="livingrooms">Living Rooms:</label>
-                        <input type="number" id="livingrooms" min="0" value="0">
+                        <input type="number" id="livingrooms" min="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="kitchens">Kitchens:</label>
-                        <input type="number" id="kitchens" min="0" value="0">
+                        <input type="number" id="kitchens" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="guestToilet">Guest Toilet:</label>
+                        <input type="number" id="guestToilet" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="laundry">Laundry Room:</label>
+                        <input type="number" id="laundry" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="study">Study Room:</label>
+                        <input type="number" id="study" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="store">Store Room:</label>
+                        <input type="number" id="store" min="0" value="0">
                     </div>
                 </div>
             </div>
@@ -481,11 +526,11 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="offices">Offices:</label>
-                        <input type="number" id="offices" min="0" value="0">
+                        <input type="number" id="offices" min="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="restrooms">Restrooms:</label>
-                        <input type="number" id="restrooms" min="0" value="0">
+                        <input type="number" id="restrooms" min="1" value="1">
                     </div>
                     <div class="form-group">
                         <label for="reception">Reception:</label>
@@ -494,6 +539,30 @@
                             <option value="1">Yes</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="commercialKitchen">Kitchenette:</label>
+                        <input type="number" id="commercialKitchen" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="canteen">Canteen:</label>
+                        <input type="number" id="canteen" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="lounge">Lounge:</label>
+                        <input type="number" id="lounge" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="studyLibrary">Study/Library:</label>
+                        <input type="number" id="studyLibrary" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="laundryRoom">Laundry Room:</label>
+                        <input type="number" id="laundryRoom" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="storeRoom">Store Room:</label>
+                        <input type="number" id="storeRoom" min="0" value="0">
+                    </div>
                 </div>
             </div>
 
@@ -501,6 +570,22 @@
             <div class="form-section">
                 <h2>Additional Services</h2>
                 <div class="addons-grid" id="addonsContainer"></div>
+            </div>
+
+            <!-- Stain Remover Section -->
+            <div class="form-section" id="stainRemoverSection">
+                <h2>Stain Remover Options</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="stainRemover">Select Stain Remover Package:</label>
+                        <select id="stainRemover">
+                            <option value="none">None</option>
+                            <option value="basic">Basic Stain Remover</option>
+                            <option value="advanced">Advanced Stain Remover</option>
+                            <option value="premium">Premium Stain Remover</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Additional Cleaners -->
@@ -559,395 +644,72 @@
             COMPANY_PHONE: '+234 704 918 9964'
         };
 
-        // Package information from PDFs
-        const packageInfo = {
-            'residential-standard': {
-                title: 'Standard Cleaning Package',
-                ideal: 'Regular maintenance cleaning for homes',
-                duration: '3-14 hours with 1-3 cleaners',
-                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide to give you a clean home. Homes significantly larger than other homes of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Bedrooms': [
-                        'Dusting of furniture and surfaces',
-                        'Making bed',
-                        'Sweeping and/or mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Folding or hanging of up to 10 clothes',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Bathrooms': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Kitchens': [
-                        'Wiping of surfaces, sinks, and appliances',
-                        'Washing of dishes',
-                        'Wiping outside of cupboards and fridge',
-                        'Cleaning the Stove top and walls behind stove',
-                        'Cleaning inside and outside of microwave',
-                        'Wiping of walls',
-                        'Emptying bins and cleaning bin area',
-                        'Mopping floors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Living Areas': [
-                        'Dusting of furniture and surfaces',
-                        'Mopping and sweeping of floors',
-                        'Dusting and wiping of skirting',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                products: [
-                    'Broom', 'Mop', 'Moping bucket', 'Packer', 'Dust bin',
-                    'Dustbin bags', 'Scrubbing brush', 'Rags', 'Buckets', 'Bowls',
-                    'Bleach', 'Floor cleaner and/or soap', 'Dish soap and sponges',
-                    'Scouring powder', 'Deep-action stain remover', 'Glass cleaner',
-                    'Cobweb broom', 'Duster', 'Air freshener'
-                ],
-                notes: [
-                    'Cleaning of Staircases within the home is also covered',
-                    'Shipping fee covers only one cleaner',
-                    'Folding of more than 10 items of clothing attracts additional charges',
-                    'Prices depend on size & condition of the space',
-                    'Outside-zone locations may attract transport fees'
-                ]
+        // Stain remover pricing (base values)
+        const stainRemoverPrices = {
+            residential: {
+                basic: 6000,
+                advanced: 9500,
+                premium: 38000
             },
-            'residential-deep': {
-                title: 'Deep Cleaning Package',
-                ideal: 'Thorough, in-depth cleaning of your home',
-                duration: '3-14 hours with 1-3 cleaners',
-                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide to give you a clean home. Homes significantly larger than other homes of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Bedrooms': [
-                        'Dusting of furniture and surfaces',
-                        'Making bed',
-                        'Sweeping and/or mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Folding or hanging of up to 10 clothes',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs',
-                        'Deep cleaning of all surfaces'
-                    ],
-                    'Bathrooms': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs',
-                        'Deep scrubbing of all surfaces'
-                    ],
-                    'Kitchens': [
-                        'Wiping of surfaces, sinks, and appliances',
-                        'Washing of dishes',
-                        'Wiping outside of cupboards and fridge',
-                        'Cleaning the Stove top and walls behind stove',
-                        'Cleaning inside and outside of microwave',
-                        'Wiping of walls',
-                        'Emptying bins and cleaning bin area',
-                        'Mopping floors',
-                        'Cleaning out cobwebs',
-                        'Deep cleaning of all appliances'
-                    ]
-                },
-                products: [
-                    'Broom', 'Mop', 'Moping bucket', 'Packer', 'Dust bin',
-                    'Dustbin bags', 'Scrubbing brush', 'Rags', 'Buckets', 'Bowls',
-                    'Bleach', 'Floor cleaner and/or soap', 'Dish soap and sponges',
-                    'Scouring powder', 'Deep-action stain remover', 'Glass cleaner',
-                    'Cobweb broom', 'Duster', 'Air freshener'
-                ],
-                notes: [
-                    'Cleaning of Staircases within the home is also covered',
-                    'Shipping fee covers only one cleaner',
-                    'Prices depend on size & condition of the space',
-                    'Outside-zone locations may attract transport fees'
-                ]
-            },
-            'residential-movein': {
-                title: 'Move-In Cleaning Package',
-                ideal: 'Thorough cleaning of your new home before moving in',
-                duration: '3-14 hours with 1-3 cleaners',
-                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide to give you a clean home. Homes significantly larger than other homes of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Bedrooms': [
-                        'Dusting and wiping of skirting',
-                        'Dusting of furniture and surfaces',
-                        'Making bed',
-                        'Sweeping and/or mopping floors',
-                        'Folding or hanging clothes',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Bathrooms': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Kitchens': [
-                        'Wiping of surfaces, sinks, and appliances',
-                        'Washing of dishes',
-                        'Wiping outside of cupboards and fridge',
-                        'Cleaning the Stove top and walls behind stove',
-                        'Cleaning inside and outside of microwave',
-                        'Wiping of walls',
-                        'Emptying bins and cleaning bin area',
-                        'Mopping floors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                products: [
-                    'Broom', 'Mop', 'Packer', 'Dustbin bags', 'Scrubbing brush',
-                    'Rags', 'Bucket', 'Bowl', 'Bleach', 'Floor cleaner or soap',
-                    'Toilet cleaner', 'Cleaning Chemicals', 'Glass cleaner', 'Air freshener'
-                ],
-                notes: [
-                    'Cleaning of Staircases within the home is also covered',
-                    'Shipping fee covers only one cleaner',
-                    'Prices depend on size & condition of the space',
-                    'Outside-zone locations may attract transport fees'
-                ]
-            },
-            'commercial-small': {
-                title: 'Small Office Cleaning Package',
-                ideal: 'Startups, NGOs, clinics, small offices (5-10 staff)',
-                space: '1-3 offices + reception + restroom',
-                staff: '1-2 cleaners',
-                duration: '3-14 hours',
-                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Reception': [
-                        'Dusting of furniture and surfaces',
-                        'Mopping and sweeping of floors',
-                        'Dusting and wiping of skirting',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches and fixtures',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Restroom': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Office': [
-                        'Dusting of furniture and surfaces',
-                        'Arranging tables and stationary',
-                        'Sweeping and mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Emptying bins and cleaning bin area',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Kitchenette': [
-                        'Wiping of surfaces, sinks, and appliances',
-                        'Washing of dishes',
-                        'Wiping outside of cupboards and fridge',
-                        'Cleaning the Stove top and walls behind stove',
-                        'Cleaning inside and outside of microwave',
-                        'Wiping of walls',
-                        'Emptying bins and cleaning bin area',
-                        'Mopping floors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                notes: [
-                    'Shipping fee covers only one cleaner',
-                    'If additional cleaners required, extra fee applies',
-                    'Folding of more than 10 clothing items attracts additional charges',
-                    'Prices depend on size & condition of space',
-                    'Outside-zone locations may attract transport fees'
-                ]
-            },
-            'commercial-standard': {
-                title: 'Standard Office Cleaning Package',
-                ideal: 'Corporate offices, law firms, real estate firms, small schools',
-                space: '4-8 offices + reception + toilets',
-                staff: '2-3 cleaners',
-                duration: '3-14 hours',
-                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Reception': [
-                        'Dusting of furniture and surfaces',
-                        'Mopping and sweeping of floors',
-                        'Dusting and wiping of skirting',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches and fixtures',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Restroom': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Office': [
-                        'Dusting of furniture and surfaces',
-                        'Arranging tables and stationary',
-                        'Sweeping and mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Emptying bins and cleaning bin area',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                notes: [
-                    'Shipping fee covers only one cleaner',
-                    'If additional cleaners required, extra fee applies',
-                    'Folding of more than 10 clothing items attracts additional charges',
-                    'Prices depend on size & condition of space',
-                    'Outside-zone locations may attract transport fees'
-                ]
-            },
-            'commercial-large': {
-                title: 'Large Office Cleaning Package',
-                ideal: 'Banks, ministries, large NGOs, schools, hospitals (non-theatre)',
-                space: '9-20+ offices, halls & corridors',
-                staff: '4-6 cleaners',
-                duration: '3-14 hours',
-                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Reception': [
-                        'Dusting of furniture and surfaces',
-                        'Mopping and sweeping of floors',
-                        'Dusting and wiping of skirting',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches and fixtures',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Restroom': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Office': [
-                        'Dusting of furniture and surfaces',
-                        'Arranging tables and stationary',
-                        'Sweeping and mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Emptying bins and cleaning bin area',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                notes: [
-                    'Shipping fee covers only one cleaner',
-                    'If additional cleaners required, extra fee applies',
-                    'Folding of more than 10 clothing items attracts additional charges',
-                    'Prices depend on size & condition of space',
-                    'Outside-zone locations may attract transport fees'
-                ]
-            },
-            'commercial-onetime': {
-                title: 'One-Time Deep Cleaning Package',
-                ideal: 'End-of-year cleaning, post-renovation, inspections, reopening',
-                staff: '4-8 cleaners',
-                duration: '3-14 hours',
-                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges which will be duly communicated by our Booking Support Team.',
-                sections: {
-                    'Reception': [
-                        'Dusting of furniture and surfaces',
-                        'Mopping and sweeping of floors',
-                        'Dusting and wiping of skirting',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches and fixtures',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Restroom': [
-                        'Cleaning of shower, bath, and sinks',
-                        'Wiping of counters and taps',
-                        'Wiping of walls and mirrors',
-                        'Mopping floors',
-                        'Wiping outside of cupboards and cabinets',
-                        'Toilet cleaning',
-                        'Folding or hanging of clean towels',
-                        'Emptying bins and cleaning bin area',
-                        'Cleaning out cobwebs'
-                    ],
-                    'Office': [
-                        'Dusting of furniture and surfaces',
-                        'Arranging tables and stationary',
-                        'Sweeping and mopping floors',
-                        'Dusting and wiping of skirting',
-                        'Emptying bins and cleaning bin area',
-                        'Dusting and wiping electronics, picture frames',
-                        'Dusting and wiping of light switches',
-                        'Cleaning Mirrors',
-                        'Cleaning out cobwebs'
-                    ]
-                },
-                notes: [
-                    'Shipping fee covers only one cleaner',
-                    'If additional cleaners required, extra fee applies',
-                    'Folding of more than 10 clothing items attracts additional charges',
-                    'Prices depend on size & condition of space',
-                    'Outside-zone locations may attract transport fees'
-                ]
+            commercial: {
+                basic: 9500,
+                advanced: 26500,
+                premium: 65500
             }
         };
+
+        // Package information from PDFs (same as before)
+        const packageInfo = { ... }; // Keep your existing packageInfo object here
 
         // Default pricing (will be overridden by Google Sheets)
         let pricing = {
             residential: {
-                standard: { base: 9000, rooms: { bedroom: 1300, bathroom: 1000, living: 1200, kitchen: 1500 } },
-                deep: { base: 41400, rooms: { bedroom: 4400, bathroom: 4100, living: 4200, kitchen: 4600 } },
-                movein: { base: 51000, rooms: { bedroom: 5000, bathroom: 4800, living: 5000, kitchen: 5200 } }
+                standard: { 
+                    base: 9000, 
+                    extraHourRate: 2800,
+                    rooms: { 
+                        bedroom: 1300, bathroom: 1000, living: 1200, kitchen: 1500,
+                        guestToilet: 800, laundry: 800, study: 800, store: 800 
+                    } 
+                },
+                deep: { 
+                    base: 41400, 
+                    extraHourRate: 3800,
+                    rooms: { 
+                        bedroom: 4400, bathroom: 4100, living: 4200, kitchen: 4600,
+                        guestToilet: 2800, laundry: 5600, study: 5600, store: 5700 
+                    } 
+                },
+                movein: { 
+                    base: 51000, 
+                    extraHourRate: 3800,
+                    rooms: { 
+                        bedroom: 5000, bathroom: 4800, living: 5000, kitchen: 5200,
+                        guestToilet: 3300, laundry: 7300, study: 7800, store: 6800 
+                    } 
+                }
             },
             commercial: {
-                small: { base: 45000, rooms: { office: 10000, restroom: 19000, reception: 16000 } },
-                standard: { base: 96000, rooms: { office: 27000, restroom: 36000, reception: 33000 } },
-                large: { base: 150000, rooms: { office: 45000, restroom: 54000, reception: 51000 } },
-                onetime: { base: 249000, rooms: { office: 78000, restroom: 87000, reception: 84000 } }
+                small: { 
+                    base: 45000, 
+                    extraHourRate: 5800,
+                    rooms: { office: 10000, restroom: 19000, reception: 16000 } 
+                },
+                standard: { 
+                    base: 96000, 
+                    extraHourRate: 9500,
+                    rooms: { office: 27000, restroom: 36000, reception: 33000 } 
+                },
+                large: { 
+                    base: 150000, 
+                    extraHourRate: 14000,
+                    rooms: { office: 45000, restroom: 54000, reception: 51000 } 
+                },
+                onetime: { 
+                    base: 249000, 
+                    extraHourRate: 20000,
+                    rooms: { office: 78000, restroom: 87000, reception: 84000 } 
+                }
             }
         };
 
@@ -984,6 +746,7 @@
         const modalContent = document.getElementById('modalContent');
         const residentialOption = document.getElementById('residentialOption');
         const commercialOption = document.getElementById('commercialOption');
+        const stainRemoverSelect = document.getElementById('stainRemover');
 
         let currentPropertyType = 'residential';
         let currentResidentialPackage = 'standard';
@@ -1058,6 +821,230 @@
                 `;
             });
             commercialPackagesGrid.innerHTML = commercialHtml;
+        }
+
+        function calculateTotalHours() {
+            let totalRooms = 0;
+            
+            if (currentPropertyType === 'residential') {
+                const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 1;
+                const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 1;
+                const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 1;
+                const kitchens = parseInt(document.getElementById('kitchens')?.value) || 1;
+                const guestToilet = parseInt(document.getElementById('guestToilet')?.value) || 0;
+                const laundry = parseInt(document.getElementById('laundry')?.value) || 0;
+                const study = parseInt(document.getElementById('study')?.value) || 0;
+                const store = parseInt(document.getElementById('store')?.value) || 0;
+                
+                totalRooms = bedrooms + bathrooms + livingrooms + kitchens + guestToilet + laundry + study + store;
+            } else {
+                const offices = parseInt(document.getElementById('offices')?.value) || 1;
+                const restrooms = parseInt(document.getElementById('restrooms')?.value) || 1;
+                const reception = parseInt(document.getElementById('reception')?.value) || 0;
+                const kitchenette = parseInt(document.getElementById('commercialKitchen')?.value) || 0;
+                const canteen = parseInt(document.getElementById('canteen')?.value) || 0;
+                const lounge = parseInt(document.getElementById('lounge')?.value) || 0;
+                const studyLibrary = parseInt(document.getElementById('studyLibrary')?.value) || 0;
+                const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
+                const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
+                
+                totalRooms = offices + restrooms + reception + kitchenette + canteen + lounge + 
+                             studyLibrary + laundryRoom + storeRoom;
+            }
+            
+            // Base: 3 hours + 1 hour per additional room beyond the 4 basic rooms
+            const baseHours = 3;
+            const additionalHours = Math.max(0, totalRooms - 4);
+            return baseHours + additionalHours;
+        }
+
+        function calculateRequiredCleaners(totalHours) {
+            if (totalHours <= 3) return 1;
+            if (totalHours <= 6) return 2;
+            if (totalHours <= 9) return 3;
+            if (totalHours <= 12) return 4;
+            if (totalHours <= 14) return 5;
+            return 6;
+        }
+
+        function calculateStainRemoverCost() {
+            const stainType = stainRemoverSelect.value;
+            if (stainType === 'none') return 0;
+            
+            const totalHours = calculateTotalHours();
+            const requiredCleaners = calculateRequiredCleaners(totalHours);
+            
+            // Stain remover cost scales with hours and cleaners
+            let basePrice = 0;
+            if (currentPropertyType === 'residential') {
+                basePrice = stainRemoverPrices.residential[stainType] || 0;
+            } else {
+                basePrice = stainRemoverPrices.commercial[stainType] || 0;
+            }
+            
+            // Multiply by hours factor (1.0 for base 3 hours, +0.1 per additional hour)
+            const hourFactor = 1 + (Math.max(0, totalHours - 3) * 0.1);
+            // Multiply by cleaners factor
+            const cleanerFactor = requiredCleaners;
+            
+            return Math.round(basePrice * hourFactor * cleanerFactor);
+        }
+
+        function calculatePrice() {
+            let basePrice = 0, roomCosts = 0, breakdown = [];
+            
+            if (currentPropertyType === 'residential') {
+                const pkg = pricing.residential[currentResidentialPackage];
+                basePrice = pkg.base;
+                
+                const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 1;
+                const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 1;
+                const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 1;
+                const kitchens = parseInt(document.getElementById('kitchens')?.value) || 1;
+                const guestToilet = parseInt(document.getElementById('guestToilet')?.value) || 0;
+                const laundry = parseInt(document.getElementById('laundry')?.value) || 0;
+                const study = parseInt(document.getElementById('study')?.value) || 0;
+                const store = parseInt(document.getElementById('store')?.value) || 0;
+                
+                roomCosts = (bedrooms * pkg.rooms.bedroom) + (bathrooms * pkg.rooms.bathroom) +
+                           (livingrooms * pkg.rooms.living) + (kitchens * pkg.rooms.kitchen) +
+                           (guestToilet * (pkg.rooms.guestToilet || 0)) +
+                           (laundry * (pkg.rooms.laundry || 0)) +
+                           (study * (pkg.rooms.study || 0)) +
+                           (store * (pkg.rooms.store || 0));
+                
+                if (bedrooms > 0) breakdown.push({ item: `Bedrooms (${bedrooms})`, cost: bedrooms * pkg.rooms.bedroom });
+                if (bathrooms > 0) breakdown.push({ item: `Bathrooms (${bathrooms})`, cost: bathrooms * pkg.rooms.bathroom });
+                if (livingrooms > 0) breakdown.push({ item: `Living Rooms (${livingrooms})`, cost: livingrooms * pkg.rooms.living });
+                if (kitchens > 0) breakdown.push({ item: `Kitchens (${kitchens})`, cost: kitchens * pkg.rooms.kitchen });
+                if (guestToilet > 0) breakdown.push({ item: `Guest Toilet (${guestToilet})`, cost: guestToilet * pkg.rooms.guestToilet });
+                if (laundry > 0) breakdown.push({ item: `Laundry (${laundry})`, cost: laundry * pkg.rooms.laundry });
+                if (study > 0) breakdown.push({ item: `Study (${study})`, cost: study * pkg.rooms.study });
+                if (store > 0) breakdown.push({ item: `Store (${store})`, cost: store * pkg.rooms.store });
+                
+            } else {
+                const pkg = pricing.commercial[currentCommercialPackage];
+                basePrice = pkg.base;
+                
+                const offices = parseInt(document.getElementById('offices')?.value) || 1;
+                const restrooms = parseInt(document.getElementById('restrooms')?.value) || 1;
+                const reception = parseInt(document.getElementById('reception')?.value) || 0;
+                const kitchenette = parseInt(document.getElementById('commercialKitchen')?.value) || 0;
+                const canteen = parseInt(document.getElementById('canteen')?.value) || 0;
+                const lounge = parseInt(document.getElementById('lounge')?.value) || 0;
+                const studyLibrary = parseInt(document.getElementById('studyLibrary')?.value) || 0;
+                const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
+                const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
+                
+                roomCosts = (offices * pkg.rooms.office) + (restrooms * pkg.rooms.restroom) + 
+                           (reception * (pkg.rooms.reception || 0)) +
+                           (kitchenette * (pkg.rooms.kitchenette || 5000)) +
+                           (canteen * (pkg.rooms.canteen || 14500)) +
+                           (lounge * (pkg.rooms.lounge || 10000)) +
+                           (studyLibrary * (pkg.rooms.studyLibrary || 8000)) +
+                           (laundryRoom * (pkg.rooms.laundryRoom || 10000)) +
+                           (storeRoom * (pkg.rooms.storeRoom || 8000));
+                
+                if (offices > 0) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg.rooms.office });
+                if (restrooms > 0) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg.rooms.restroom });
+                if (reception > 0) breakdown.push({ item: 'Reception', cost: pkg.rooms.reception });
+                if (kitchenette > 0) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * 5000 });
+                if (canteen > 0) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * 14500 });
+                if (lounge > 0) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * 10000 });
+                if (studyLibrary > 0) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * 8000 });
+                if (laundryRoom > 0) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * 10000 });
+                if (storeRoom > 0) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * 8000 });
+            }
+            
+            // Calculate hours and required cleaners
+            const totalHours = calculateTotalHours();
+            
+            if (totalHours > 14) {
+                alert('Total cleaning time exceeds 14 hours. Please contact us directly for a custom quote.');
+                return 0;
+            }
+            
+            const requiredCleaners = calculateRequiredCleaners(totalHours);
+            
+            // Add extra hours cost
+            let extraHoursCost = 0;
+            if (totalHours > 3) {
+                const extraHours = totalHours - 3;
+                const extraHourRate = currentPropertyType === 'residential' ? 
+                    pricing.residential[currentResidentialPackage].extraHourRate :
+                    pricing.commercial[currentCommercialPackage].extraHourRate;
+                extraHoursCost = extraHours * extraHourRate;
+                breakdown.push({ item: `Extra Hours (${extraHours} hrs)`, cost: extraHoursCost });
+            }
+            
+            // Add auto-calculated additional cleaners
+            let additionalCleanersAuto = requiredCleaners - 1; // Subtract the first cleaner
+            if (additionalCleanersAuto > 0) {
+                const cleanerCost = currentPropertyType === 'residential' ? 
+                    additionalCleanersAuto * 5000 :
+                    additionalCleanersAuto * additionalCleanerCost.commercial[currentCommercialPackage];
+                breakdown.push({ item: `Required Additional Cleaners (${additionalCleanersAuto})`, cost: cleanerCost });
+            }
+            
+            // Add manually requested additional cleaners
+            const manualAdditionalCleaners = parseInt(document.getElementById('additionalCleaners')?.value) || 0;
+            let manualCleanerCost = 0;
+            if (manualAdditionalCleaners > 0) {
+                if (currentPropertyType === 'residential') {
+                    manualCleanerCost = manualAdditionalCleaners * 5000;
+                } else {
+                    manualCleanerCost = manualAdditionalCleaners * additionalCleanerCost.commercial[currentCommercialPackage];
+                }
+                breakdown.push({ item: `Manual Additional Cleaners (${manualAdditionalCleaners})`, cost: manualCleanerCost });
+            }
+            
+            // Add add-ons
+            let addonsTotal = 0;
+            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => {
+                addonsTotal += parseFloat(cb.dataset.price);
+                breakdown.push({ item: cb.dataset.name, cost: parseFloat(cb.dataset.price) });
+            });
+            
+            // Add stain remover
+            const stainRemoverCost = calculateStainRemoverCost();
+            if (stainRemoverCost > 0) {
+                const stainType = stainRemoverSelect.options[stainRemoverSelect.selectedIndex].text;
+                breakdown.push({ item: stainType, cost: stainRemoverCost });
+            }
+            
+            // Calculate subtotal
+            let subtotal = basePrice + roomCosts + extraHoursCost + 
+                          (additionalCleanersAuto > 0 ? additionalCleanersAuto * 
+                           (currentPropertyType === 'residential' ? 5000 : additionalCleanerCost.commercial[currentCommercialPackage]) : 0) +
+                          manualCleanerCost + addonsTotal + stainRemoverCost;
+            
+            breakdown.push({ item: 'Package Base', cost: basePrice });
+            
+            // Apply frequency discount
+            const discountPercent = frequencyDiscounts[frequencySelect.value];
+            const discountAmount = (subtotal * discountPercent) / 100;
+            const total = subtotal - discountAmount;
+            
+            if (discountPercent > 0) breakdown.push({ item: `Discount (${discountPercent}%)`, cost: -discountAmount });
+            
+            // Add hours and cleaners info to breakdown
+            breakdown.push({ item: `Estimated Time`, cost: `${totalHours} hours` });
+            breakdown.push({ item: `Required Cleaners`, cost: requiredCleaners.toString() });
+            
+            totalPriceSpan.textContent = `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`;
+            
+            let breakdownHtml = '<h3>Price Breakdown</h3>';
+            breakdown.forEach(item => {
+                if (typeof item.cost === 'number') {
+                    breakdownHtml += `<div class="breakdown-item"><span>${item.item}</span><span>${CONFIG.CURRENCY}${Math.abs(item.cost).toLocaleString()}${item.cost < 0 ? ' discount' : ''}</span></div>`;
+                } else {
+                    breakdownHtml += `<div class="breakdown-item"><span>${item.item}</span><span>${item.cost}</span></div>`;
+                }
+            });
+            breakdownHtml += `<div class="breakdown-item total"><span>Total</span><span>${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}</span></div>`;
+            priceBreakdown.innerHTML = breakdownHtml;
+            
+            return total;
         }
 
         // Package selection functions
@@ -1178,146 +1165,76 @@
         // Initialize with residential selected
         residentialOption.classList.add('selected');
 
+        function updateAddons() {
+            const addonsList = currentPropertyType === 'residential' ? addons.residential : addons.commercial;
+            let html = '';
+            
+            // Use default addons if not loaded from sheet
+            const defaultAddons = currentPropertyType === 'residential' ? 
+                [
+                    { name: "Balcony Cleaning", price: 1000 },
+                    { name: "Window Cleaning", price: 1400 },
+                    { name: "Fridge Cleaning", price: 700 },
+                    { name: "Fan Cleaning", price: 700 },
+                    { name: "Oven Cleaning", price: 700 },
+                    { name: "Kitchen Cabinet", price: 1000 },
+                    { name: "Wall Cleaning", price: 2000 },
+                    { name: "Ironing", price: 5600 },
+                    { name: "Laundry", price: 2800 },
+                    { name: "Wardrobe Organization", price: 4200 },
+                    { name: "Compound Cleaning", price: 2800 },
+                    { name: "Miscellaneous Hour", price: 2800 }
+                ] : [
+                    { name: "Kitchenette", price: 5000 },
+                    { name: "Canteen", price: 14500 },
+                    { name: "Lounge", price: 10000 },
+                    { name: "Study/Library", price: 8000 },
+                    { name: "Laundry Room", price: 10000 },
+                    { name: "Store", price: 8000 },
+                    { name: "Balcony Cleaning", price: 3000 },
+                    { name: "Window Cleaning", price: 4500 },
+                    { name: "Fridge Cleaning", price: 1500 },
+                    { name: "Fan Cleaning", price: 1500 },
+                    { name: "Kitchen Cabinet", price: 2000 },
+                    { name: "Wall Cleaning", price: 9500 },
+                    { name: "Compound Cleaning", price: 5800 },
+                    { name: "Miscellaneous Hour", price: 5800 }
+                ];
+            
+            const displayAddons = addonsList.length > 0 ? addonsList : defaultAddons;
+            
+            displayAddons.forEach((addon) => {
+                html += `
+                    <label class="addon-item">
+                        <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}">
+                        <span class="addon-name">${addon.name}</span>
+                        <span class="addon-price">${CONFIG.CURRENCY}${addon.price.toLocaleString()}</span>
+                    </label>
+                `;
+            });
+            
+            addonsContainer.innerHTML = html;
+            document.querySelectorAll('.addon-checkbox').forEach(cb => cb.addEventListener('change', calculatePrice));
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             loadPricingData();
             setupEventListeners();
         });
 
         function setupEventListeners() {
-            const inputs = ['bedrooms', 'bathrooms', 'livingrooms', 'kitchens', 'offices', 'restrooms', 'reception', 'additionalCleaners'];
+            const inputs = ['bedrooms', 'bathrooms', 'livingrooms', 'kitchens', 'guestToilet', 'laundry', 'study', 'store',
+                           'offices', 'restrooms', 'reception', 'commercialKitchen', 'canteen', 'lounge', 'studyLibrary', 
+                           'laundryRoom', 'storeRoom', 'additionalCleaners'];
+            
             inputs.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) element.addEventListener('input', calculatePrice);
             });
 
             frequencySelect.addEventListener('change', calculatePrice);
+            stainRemoverSelect.addEventListener('change', calculatePrice);
             submitBtn.addEventListener('click', submitForm);
-        }
-
-        function updateAddons() {
-            const addonsList = currentPropertyType === 'residential' ? addons.residential : addons.commercial;
-            let html = '';
-            if (addonsList.length === 0) {
-                // Use default addons if not loaded from sheet
-                const defaultAddons = currentPropertyType === 'residential' ? 
-                    [
-                        { name: "Balcony Cleaning", price: 1000 },
-                        { name: "Window Cleaning", price: 1400 },
-                        { name: "Fridge Cleaning", price: 700 },
-                        { name: "Fan Cleaning", price: 700 },
-                        { name: "Oven Cleaning", price: 700 },
-                        { name: "Kitchen Cabinet", price: 1000 },
-                        { name: "Wall Cleaning", price: 2000 },
-                        { name: "Ironing", price: 5600 },
-                        { name: "Laundry", price: 2800 },
-                        { name: "Wardrobe Organization", price: 4200 },
-                        { name: "Compound Cleaning", price: 2800 },
-                        { name: "Miscellaneous Hour", price: 2800 }
-                    ] : [
-                        { name: "Kitchenette", price: 5000 },
-                        { name: "Canteen", price: 14500 },
-                        { name: "Lounge", price: 10000 },
-                        { name: "Study/Library", price: 8000 },
-                        { name: "Laundry Room", price: 10000 },
-                        { name: "Store", price: 8000 },
-                        { name: "Balcony Cleaning", price: 3000 },
-                        { name: "Window Cleaning", price: 4500 },
-                        { name: "Fridge Cleaning", price: 1500 },
-                        { name: "Fan Cleaning", price: 1500 },
-                        { name: "Kitchen Cabinet", price: 2000 },
-                        { name: "Wall Cleaning", price: 9500 },
-                        { name: "Compound Cleaning", price: 5800 },
-                        { name: "Miscellaneous Hour", price: 5800 }
-                    ];
-                defaultAddons.forEach((addon) => {
-                    html += `
-                        <label class="addon-item">
-                            <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}">
-                            <span class="addon-name">${addon.name}</span>
-                            <span class="addon-price">${CONFIG.CURRENCY}${addon.price.toLocaleString()}</span>
-                        </label>
-                    `;
-                });
-            } else {
-                addonsList.forEach((addon) => {
-                    html += `
-                        <label class="addon-item">
-                            <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}">
-                            <span class="addon-name">${addon.name}</span>
-                            <span class="addon-price">${CONFIG.CURRENCY}${addon.price.toLocaleString()}</span>
-                        </label>
-                    `;
-                });
-            }
-            addonsContainer.innerHTML = html;
-            document.querySelectorAll('.addon-checkbox').forEach(cb => cb.addEventListener('change', calculatePrice));
-        }
-
-        function calculatePrice() {
-            let basePrice = 0, roomCosts = 0, breakdown = [];
-            
-            if (currentPropertyType === 'residential') {
-                const pkg = pricing.residential[currentResidentialPackage];
-                basePrice = pkg.base;
-                const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 0;
-                const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 0;
-                const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 0;
-                const kitchens = parseInt(document.getElementById('kitchens')?.value) || 0;
-                
-                roomCosts = (bedrooms * pkg.rooms.bedroom) + (bathrooms * pkg.rooms.bathroom) +
-                           (livingrooms * pkg.rooms.living) + (kitchens * pkg.rooms.kitchen);
-                
-                if (bedrooms > 0) breakdown.push({ item: `Bedrooms (${bedrooms})`, cost: bedrooms * pkg.rooms.bedroom });
-                if (bathrooms > 0) breakdown.push({ item: `Bathrooms (${bathrooms})`, cost: bathrooms * pkg.rooms.bathroom });
-                if (livingrooms > 0) breakdown.push({ item: `Living Rooms (${livingrooms})`, cost: livingrooms * pkg.rooms.living });
-                if (kitchens > 0) breakdown.push({ item: `Kitchens (${kitchens})`, cost: kitchens * pkg.rooms.kitchen });
-            } else {
-                const pkg = pricing.commercial[currentCommercialPackage];
-                basePrice = pkg.base;
-                const offices = parseInt(document.getElementById('offices')?.value) || 0;
-                const restrooms = parseInt(document.getElementById('restrooms')?.value) || 0;
-                const reception = parseInt(document.getElementById('reception')?.value) || 0;
-                
-                roomCosts = (offices * pkg.rooms.office) + (restrooms * pkg.rooms.restroom) + (reception * (pkg.rooms.reception || 0));
-                
-                if (offices > 0) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg.rooms.office });
-                if (restrooms > 0) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg.rooms.restroom });
-                if (reception > 0) breakdown.push({ item: 'Reception', cost: pkg.rooms.reception });
-            }
-            
-            let addonsTotal = 0;
-            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => {
-                addonsTotal += parseFloat(cb.dataset.price);
-                breakdown.push({ item: cb.dataset.name, cost: parseFloat(cb.dataset.price) });
-            });
-            
-            const additionalCleaners = parseInt(document.getElementById('additionalCleaners')?.value) || 0;
-            let cleanerCost = 0;
-            if (additionalCleaners > 0) {
-                if (currentPropertyType === 'residential') cleanerCost = additionalCleaners * 5000;
-                else cleanerCost = additionalCleaners * additionalCleanerCost.commercial[currentCommercialPackage];
-                breakdown.push({ item: `Additional Cleaners (${additionalCleaners})`, cost: cleanerCost });
-            }
-            
-            let subtotal = basePrice + roomCosts + addonsTotal + cleanerCost;
-            breakdown.push({ item: 'Package Base', cost: basePrice });
-            
-            const discountPercent = frequencyDiscounts[frequencySelect.value];
-            const discountAmount = (subtotal * discountPercent) / 100;
-            const total = subtotal - discountAmount;
-            
-            if (discountPercent > 0) breakdown.push({ item: `Discount (${discountPercent}%)`, cost: -discountAmount });
-            
-            totalPriceSpan.textContent = `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`;
-            
-            let breakdownHtml = '<h3>Price Breakdown</h3>';
-            breakdown.forEach(item => {
-                breakdownHtml += `<div class="breakdown-item"><span>${item.item}</span><span>${CONFIG.CURRENCY}${Math.abs(item.cost).toLocaleString()}${item.cost < 0 ? ' discount' : ''}</span></div>`;
-            });
-            breakdownHtml += `<div class="breakdown-item total"><span>Total</span><span>${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}</span></div>`;
-            priceBreakdown.innerHTML = breakdownHtml;
-            
-            return total;
         }
 
         function validateForm() {
@@ -1350,8 +1267,33 @@
             loadingOverlay.style.display = 'flex';
             const total = calculatePrice();
             
+            if (total === 0) {
+                loadingOverlay.style.display = 'none';
+                return;
+            }
+            
             const selectedAddons = [];
             document.querySelectorAll('.addon-checkbox:checked').forEach(cb => selectedAddons.push(cb.dataset.name));
+            
+            // Add stain remover if selected
+            if (stainRemoverSelect.value !== 'none') {
+                selectedAddons.push(stainRemoverSelect.options[stainRemoverSelect.selectedIndex].text);
+            }
+            
+            // Get room details string
+            let roomsString = '';
+            if (currentPropertyType === 'residential') {
+                roomsString = `Bed:${document.getElementById('bedrooms').value}, Bath:${document.getElementById('bathrooms').value}, ` +
+                             `Living:${document.getElementById('livingrooms').value}, Kitchen:${document.getElementById('kitchens').value}, ` +
+                             `Guest Toilet:${document.getElementById('guestToilet').value}, Laundry:${document.getElementById('laundry').value}, ` +
+                             `Study:${document.getElementById('study').value}, Store:${document.getElementById('store').value}`;
+            } else {
+                roomsString = `Offices:${document.getElementById('offices').value}, Restrooms:${document.getElementById('restrooms').value}, ` +
+                             `Reception:${document.getElementById('reception').value === '1' ? 'Yes' : 'No'}, ` +
+                             `Kitchenette:${document.getElementById('commercialKitchen').value}, Canteen:${document.getElementById('canteen').value}, ` +
+                             `Lounge:${document.getElementById('lounge').value}, Study/Library:${document.getElementById('studyLibrary').value}, ` +
+                             `Laundry Room:${document.getElementById('laundryRoom').value}, Store Room:${document.getElementById('storeRoom').value}`;
+            }
             
             const formData = new URLSearchParams({
                 secretToken: CONFIG.API_SECRET_TOKEN,
@@ -1367,11 +1309,11 @@
                      currentCommercialPackage === 'standard' ? 'Standard Office' :
                      currentCommercialPackage === 'large' ? 'Large Office' : 'One-Time Deep Clean'),
                 frequency: frequencySelect.options[frequencySelect.selectedIndex].text,
-                rooms: currentPropertyType === 'residential' ?
-                    `Bed:${document.getElementById('bedrooms').value}, Bath:${document.getElementById('bathrooms').value}, Living:${document.getElementById('livingrooms').value}, Kitchen:${document.getElementById('kitchens').value}` :
-                    `Offices:${document.getElementById('offices').value}, Restrooms:${document.getElementById('restrooms').value}, Reception:${document.getElementById('reception').value === '1' ? 'Yes' : 'No'}`,
+                rooms: roomsString,
                 addons: selectedAddons.join(', ') || 'None',
                 additionalCleaners: document.getElementById('additionalCleaners').value || '0',
+                totalHours: calculateTotalHours().toString(),
+                requiredCleaners: calculateRequiredCleaners(calculateTotalHours()).toString(),
                 totalAmount: `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`
             });
 

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K.R.O Cleaning Service - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="config.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-container, .dashboard-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .login-box {
+            padding: 40px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .login-box h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 1.8em; }
+        .logout-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .dashboard-content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .section h3 {
+            background: #f8f9ff;
+            padding: 15px 20px;
+            margin: 0;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+        .section-content {
+            padding: 20px;
+        }
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .price-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .price-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        .price-item input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .price-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .save-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .save-btn:hover { opacity: 0.9; }
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .loading-spinner { text-align: center; }
+        .loading-spinner i {
+            font-size: 50px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button class="login-btn" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <div class="error-message" id="loginError">Invalid username or password</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" style="display: none;">
+        <div class="dashboard-container">
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> K.R.O Cleaning Service Admin Dashboard</h1>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i> Prices updated successfully!
+                </div>
+                
+                <div class="tab-container">
+                    <div class="tab active" onclick="switchTab('residential')">Residential</div>
+                    <div class="tab" onclick="switchTab('commercial')">Commercial</div>
+                    <div class="tab" onclick="switchTab('addons')">Add-ons</div>
+                    <div class="tab" onclick="switchTab('discounts')">Discounts</div>
+                </div>
+                
+                <!-- Residential Tab -->
+                <div id="residentialTab" class="tab-content active">
+                    <div class="section">
+                        <h3>Residential Packages</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="residentialPackages"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Residential Room Rates</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="residentialRooms"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Residential Extra Hour Rates</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="residentialExtraHours"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commercial Tab -->
+                <div id="commercialTab" class="tab-content">
+                    <div class="section">
+                        <h3>Commercial Packages</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="commercialPackages"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Commercial Room Rates</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="commercialRooms"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Commercial Extra Hour Rates</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="commercialExtraHours"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add-ons Tab -->
+                <div id="addonsTab" class="tab-content">
+                    <div class="section">
+                        <h3>Residential Add-ons</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="residentialAddons"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>Commercial Add-ons</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="commercialAddons"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discounts Tab -->
+                <div id="discountsTab" class="tab-content">
+                    <div class="section">
+                        <h3>Frequency Discounts</h3>
+                        <div class="section-content">
+                            <div class="price-grid" id="discountsGrid"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="save-btn" onclick="saveAllPrices()">
+                    <i class="fas fa-save"></i> Save All Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h3>Loading...</h3>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = window.KRO_CONFIG || {
+            ADMIN_API_URL: 'https://script.google.com/macros/s/YOUR_ADMIN_API_URL_HERE/exec',
+            CURRENCY: '₦'
+        };
+
+        let sessionToken = localStorage.getItem('adminToken');
+        let currentPrices = {};
+
+        // Check if already logged in
+        if (sessionToken) {
+            showDashboard();
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            const script = document.createElement('script');
+            const callbackName = 'loginCallback_' + Date.now();
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (response && response.result === 'success') {
+                    sessionToken = response.token;
+                    localStorage.setItem('adminToken', response.token);
+                    showDashboard();
+                    loadPrices();
+                } else {
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            };
+            
+            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            document.body.appendChild(script);
+        }
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            sessionToken = null;
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+        }
+
+        function loadPrices() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            const script = document.createElement('script');
+            const callbackName = 'pricesCallback_' + Date.now();
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                
+                if (response && response.result === 'success') {
+                    currentPrices = response.data;
+                    renderPrices();
+                } else {
+                    alert('Failed to load prices');
+                }
+                document.getElementById('loadingOverlay').style.display = 'none';
+            };
+            
+            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=getPrices&token=${sessionToken}`;
+            document.body.appendChild(script);
+        }
+
+        function renderPrices() {
+            // Render Residential Packages
+            let residentialPackagesHtml = '';
+            const packages = [
+                { name: 'Standard', row: 3 },
+                { name: 'Deep', row: 4 },
+                { name: 'Move-In', row: 5 }
+            ];
+            
+            packages.forEach(pkg => {
+                residentialPackagesHtml += `
+                    <div class="price-item">
+                        <label>${pkg.name} Base Price</label>
+                        <input type="number" id="res_${pkg.name.toLowerCase()}_base" value="${currentPrices[pkg.row]?.[1] || 0}" data-row="${pkg.row}" data-col="2">
+                    </div>
+                `;
+            });
+            document.getElementById('residentialPackages').innerHTML = residentialPackagesHtml;
+
+            // Render Residential Rooms
+            const roomNames = ['Bedroom', 'Bathroom', 'Living', 'Kitchen', 'Guest Toilet', 'Laundry', 'Study', 'Store'];
+            const roomCols = [3, 4, 5, 6, 7, 8, 9, 10];
+            let residentialRoomsHtml = '';
+            
+            packages.forEach(pkg => {
+                roomNames.forEach((room, index) => {
+                    residentialRoomsHtml += `
+                        <div class="price-item">
+                            <label>${pkg.name} - ${room}</label>
+                            <input type="number" id="res_${pkg.name.toLowerCase()}_${room.toLowerCase().replace(' ', '_')}" 
+                                   value="${currentPrices[pkg.row]?.[roomCols[index]] || 0}" 
+                                   data-row="${pkg.row}" data-col="${roomCols[index]}">
+                        </div>
+                    `;
+                });
+            });
+            document.getElementById('residentialRooms').innerHTML = residentialRoomsHtml;
+
+            // Render Residential Extra Hours
+            let residentialExtraHtml = '';
+            packages.forEach(pkg => {
+                residentialExtraHtml += `
+                    <div class="price-item">
+                        <label>${pkg.name} Extra Hour Rate</label>
+                        <input type="number" id="res_${pkg.name.toLowerCase()}_extra" 
+                               value="${currentPrices[pkg.row]?.[11] || 0}" data-row="${pkg.row}" data-col="11">
+                    </div>
+                `;
+            });
+            document.getElementById('residentialExtraHours').innerHTML = residentialExtraHtml;
+
+            // Commercial rendering similar pattern...
+        }
+
+        function saveAllPrices() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            const updates = [];
+            const inputs = document.querySelectorAll('input[data-row]');
+            
+            inputs.forEach(input => {
+                updates.push({
+                    row: parseInt(input.dataset.row),
+                    col: parseInt(input.dataset.col),
+                    value: parseFloat(input.value) || 0
+                });
+            });
+            
+            const script = document.createElement('script');
+            const callbackName = 'saveCallback_' + Date.now();
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (response && response.result === 'success') {
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('Failed to save prices');
+                }
+            };
+            
+            script.src = `${CONFIG.ADMIN_API_URL}?callback=${callbackName}&action=updatePrices&token=${sessionToken}&updates=${encodeURIComponent(JSON.stringify(updates))}`;
+            document.body.appendChild(script);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`${tab}Tab`).classList.add('active');
+        }
+    </script>
+</body>
+</html>
