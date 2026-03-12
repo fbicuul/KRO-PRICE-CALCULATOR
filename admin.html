@@ -99,7 +99,7 @@
         
         /* Dashboard Styles */
         .dashboard-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -199,9 +199,14 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
         }
+        .section h4 {
+            color: #555;
+            margin: 20px 0 10px;
+            font-size: 1.1em;
+        }
         .price-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 15px;
         }
         .price-item {
@@ -209,6 +214,7 @@
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 3px solid #667eea;
         }
         .price-item label {
             display: block;
@@ -217,7 +223,7 @@
             font-weight: 500;
             font-size: 0.95em;
         }
-        .price-item input {
+        .price-item input, .price-item select {
             width: 100%;
             padding: 10px;
             border: 2px solid #e0e0e0;
@@ -225,9 +231,41 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-        .price-item input:focus {
+        .price-item input:focus, .price-item select:focus {
             outline: none;
             border-color: #667eea;
+        }
+        .time-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .time-input-group input {
+            flex: 1;
+        }
+        .time-input-group span {
+            color: #667eea;
+            font-weight: bold;
+            min-width: 40px;
+        }
+        .time-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+        .info-box i {
+            margin-right: 8px;
         }
         
         /* Save Button */
@@ -353,7 +391,7 @@
         
         <div class="dashboard-content">
             <div id="successMessage" class="success-message">
-                <i class="fas fa-check-circle"></i> Prices updated successfully!
+                <i class="fas fa-check-circle"></i> Settings updated successfully!
             </div>
             
             <div class="tab-container">
@@ -361,12 +399,16 @@
                 <button class="tab" onclick="switchTab('commercial')">Commercial Packages</button>
                 <button class="tab" onclick="switchTab('addons')">Add-ons</button>
                 <button class="tab" onclick="switchTab('discounts')">Discounts</button>
+                <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
             </div>
             
             <!-- Residential Tab -->
             <div id="residentialTab" class="tab-content" style="display: block;">
                 <div class="section">
-                    <h3>Residential Packages & Room Rates</h3>
+                    <h3>Residential Packages - Prices & Time Settings</h3>
+                    <div class="info-box">
+                        <i class="fas fa-clock"></i> Set time in minutes for each room. Total time determines days required.
+                    </div>
                     <div class="price-grid" id="residentialPrices"></div>
                 </div>
             </div>
@@ -374,7 +416,10 @@
             <!-- Commercial Tab -->
             <div id="commercialTab" class="tab-content" style="display: none;">
                 <div class="section">
-                    <h3>Commercial Packages & Room Rates</h3>
+                    <h3>Commercial Packages - Prices & Time Settings</h3>
+                    <div class="info-box">
+                        <i class="fas fa-clock"></i> Set time in minutes for each area. Total time determines days required.
+                    </div>
                     <div class="price-grid" id="commercialPrices"></div>
                 </div>
             </div>
@@ -382,7 +427,10 @@
             <!-- Add-ons Tab -->
             <div id="addonsTab" class="tab-content" style="display: none;">
                 <div class="section">
-                    <h3>Additional Services</h3>
+                    <h3>Additional Services - Prices & Time Settings</h3>
+                    <div class="info-box">
+                        <i class="fas fa-clock"></i> Set time in minutes for each add-on service.
+                    </div>
                     <div class="price-grid" id="addonsPrices"></div>
                 </div>
             </div>
@@ -395,7 +443,18 @@
                 </div>
             </div>
             
-            <button class="save-btn" onclick="saveAllPrices()">
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content" style="display: none;">
+                <div class="section">
+                    <h3>Working Hours & Multi-Day Settings</h3>
+                    <div class="info-box">
+                        <i class="fas fa-calendar-alt"></i> Configure how many hours per day and when work can be done.
+                    </div>
+                    <div class="price-grid" id="settingsPrices"></div>
+                </div>
+            </div>
+            
+            <button class="save-btn" onclick="saveAllSettings()">
                 <i class="fas fa-save"></i> Save All Changes
             </button>
         </div>
@@ -428,7 +487,6 @@
             document.getElementById('loginError').style.display = 'none';
             
             try {
-                // Call login API
                 const response = await fetch(`${CONFIG.API_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
                 const data = await response.json();
                 
@@ -486,128 +544,180 @@
             }
         }
 
-        // Render pricing data
+        // Render pricing data with time inputs
         function renderPricingData() {
             if (!pricingData || !pricingData.rows) return;
             
             const rows = pricingData.rows;
             
-            // Residential Prices
+            // Residential Prices with Time Inputs
             let residentialHtml = '';
             for (let i = 3; i <= 5; i++) {
                 if (rows[i]) {
                     residentialHtml += `
                         <div class="price-item">
-                            <label>${rows[i][0] || 'Package'} - Base Price</label>
-                            <input type="number" id="res_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Bedroom</label>
-                            <input type="number" id="res_${i}_bedroom" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Bathroom</label>
-                            <input type="number" id="res_${i}_bathroom" value="${rows[i][3] || 0}" data-row="${i}" data-col="4">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Living</label>
-                            <input type="number" id="res_${i}_living" value="${rows[i][4] || 0}" data-row="${i}" data-col="5">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Kitchen</label>
-                            <input type="number" id="res_${i}_kitchen" value="${rows[i][5] || 0}" data-row="${i}" data-col="6">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Guest Toilet</label>
-                            <input type="number" id="res_${i}_guest" value="${rows[i][6] || 0}" data-row="${i}" data-col="7">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Laundry</label>
-                            <input type="number" id="res_${i}_laundry" value="${rows[i][7] || 0}" data-row="${i}" data-col="8">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Study</label>
-                            <input type="number" id="res_${i}_study" value="${rows[i][8] || 0}" data-row="${i}" data-col="9">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Store</label>
-                            <input type="number" id="res_${i}_store" value="${rows[i][9] || 0}" data-row="${i}" data-col="10">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Office Space</label>
-                            <input type="number" id="res_${i}_office" value="${rows[i][10] || 0}" data-row="${i}" data-col="11">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Extra Hour</label>
-                            <input type="number" id="res_${i}_extra" value="${rows[i][11] || 0}" data-row="${i}" data-col="12">
+                            <h4 style="color: #667eea; margin-bottom: 15px;">${rows[i][0] || 'Package'}</h4>
+                            
+                            <label>Base Price (₦):</label>
+                            <input type="number" id="res_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2" placeholder="Base Price">
+                            
+                            <label style="margin-top: 10px;">Base Time (hours):</label>
+                            <input type="number" id="res_${i}_baseTime" value="${rows[i][2] || 3}" data-row="${i}" data-col="3" placeholder="Base Time">
+                            
+                            <h4 style="margin: 20px 0 10px;">Room Rates & Times</h4>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_bedroom_price" value="${rows[i][3] || 0}" data-row="${i}" data-col="4" placeholder="Bedroom Price">
+                                <input type="number" id="res_${i}_bedroom_time" value="${rows[i][4] || 30}" data-row="${i}" data-col="5" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_bathroom_price" value="${rows[i][5] || 0}" data-row="${i}" data-col="6" placeholder="Bathroom Price">
+                                <input type="number" id="res_${i}_bathroom_time" value="${rows[i][6] || 25}" data-row="${i}" data-col="7" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_living_price" value="${rows[i][7] || 0}" data-row="${i}" data-col="8" placeholder="Living Price">
+                                <input type="number" id="res_${i}_living_time" value="${rows[i][8] || 30}" data-row="${i}" data-col="9" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_kitchen_price" value="${rows[i][9] || 0}" data-row="${i}" data-col="10" placeholder="Kitchen Price">
+                                <input type="number" id="res_${i}_kitchen_time" value="${rows[i][10] || 40}" data-row="${i}" data-col="11" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_guest_price" value="${rows[i][11] || 0}" data-row="${i}" data-col="12" placeholder="Guest Toilet Price">
+                                <input type="number" id="res_${i}_guest_time" value="${rows[i][12] || 20}" data-row="${i}" data-col="13" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_laundry_price" value="${rows[i][13] || 0}" data-row="${i}" data-col="14" placeholder="Laundry Price">
+                                <input type="number" id="res_${i}_laundry_time" value="${rows[i][14] || 25}" data-row="${i}" data-col="15" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_study_price" value="${rows[i][15] || 0}" data-row="${i}" data-col="16" placeholder="Study Price">
+                                <input type="number" id="res_${i}_study_time" value="${rows[i][16] || 25}" data-row="${i}" data-col="17" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_store_price" value="${rows[i][17] || 0}" data-row="${i}" data-col="18" placeholder="Store Price">
+                                <input type="number" id="res_${i}_store_time" value="${rows[i][18] || 20}" data-row="${i}" data-col="19" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="res_${i}_office_price" value="${rows[i][19] || 0}" data-row="${i}" data-col="20" placeholder="Office Price">
+                                <input type="number" id="res_${i}_office_time" value="${rows[i][20] || 25}" data-row="${i}" data-col="21" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <label style="margin-top: 15px;">Extra Hour Rate (₦):</label>
+                            <input type="number" id="res_${i}_extra" value="${rows[i][21] || 0}" data-row="${i}" data-col="22" placeholder="Extra Hour Rate">
                         </div>
                     `;
                 }
             }
             document.getElementById('residentialPrices').innerHTML = residentialHtml || '<p>No residential data found</p>';
             
-            // Commercial Prices
+            // Commercial Prices with Time Inputs
             let commercialHtml = '';
             for (let i = 9; i <= 12; i++) {
                 if (rows[i]) {
                     commercialHtml += `
                         <div class="price-item">
-                            <label>${rows[i][0] || 'Package'} - Base Price</label>
-                            <input type="number" id="com_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Office</label>
-                            <input type="number" id="com_${i}_office" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Restroom</label>
-                            <input type="number" id="com_${i}_restroom" value="${rows[i][3] || 0}" data-row="${i}" data-col="4">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Reception</label>
-                            <input type="number" id="com_${i}_reception" value="${rows[i][4] || 0}" data-row="${i}" data-col="5">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Kitchenette</label>
-                            <input type="number" id="com_${i}_kitchenette" value="${rows[i][5] || 0}" data-row="${i}" data-col="6">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Canteen</label>
-                            <input type="number" id="com_${i}_canteen" value="${rows[i][6] || 0}" data-row="${i}" data-col="7">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Lounge</label>
-                            <input type="number" id="com_${i}_lounge" value="${rows[i][7] || 0}" data-row="${i}" data-col="8">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Study/Library</label>
-                            <input type="number" id="com_${i}_study" value="${rows[i][8] || 0}" data-row="${i}" data-col="9">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Laundry Room</label>
-                            <input type="number" id="com_${i}_laundry" value="${rows[i][9] || 0}" data-row="${i}" data-col="10">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Store</label>
-                            <input type="number" id="com_${i}_store" value="${rows[i][10] || 0}" data-row="${i}" data-col="11">
-                        </div>
-                        <div class="price-item">
-                            <label>${rows[i][0]} - Extra Hour</label>
-                            <input type="number" id="com_${i}_extra" value="${rows[i][11] || 0}" data-row="${i}" data-col="12">
+                            <h4 style="color: #667eea; margin-bottom: 15px;">${rows[i][0] || 'Package'}</h4>
+                            
+                            <label>Base Price (₦):</label>
+                            <input type="number" id="com_${i}_base" value="${rows[i][1] || 0}" data-row="${i}" data-col="2" placeholder="Base Price">
+                            
+                            <label style="margin-top: 10px;">Base Time (hours):</label>
+                            <input type="number" id="com_${i}_baseTime" value="${rows[i][2] || 4}" data-row="${i}" data-col="3" placeholder="Base Time">
+                            
+                            <h4 style="margin: 20px 0 10px;">Area Rates & Times</h4>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_office_price" value="${rows[i][3] || 0}" data-row="${i}" data-col="4" placeholder="Office Price">
+                                <input type="number" id="com_${i}_office_time" value="${rows[i][4] || 40}" data-row="${i}" data-col="5" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_restroom_price" value="${rows[i][5] || 0}" data-row="${i}" data-col="6" placeholder="Restroom Price">
+                                <input type="number" id="com_${i}_restroom_time" value="${rows[i][6] || 35}" data-row="${i}" data-col="7" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_reception_price" value="${rows[i][7] || 0}" data-row="${i}" data-col="8" placeholder="Reception Price">
+                                <input type="number" id="com_${i}_reception_time" value="${rows[i][8] || 30}" data-row="${i}" data-col="9" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_kitchenette_price" value="${rows[i][9] || 0}" data-row="${i}" data-col="10" placeholder="Kitchenette Price">
+                                <input type="number" id="com_${i}_kitchenette_time" value="${rows[i][10] || 25}" data-row="${i}" data-col="11" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_canteen_price" value="${rows[i][11] || 0}" data-row="${i}" data-col="12" placeholder="Canteen Price">
+                                <input type="number" id="com_${i}_canteen_time" value="${rows[i][12] || 60}" data-row="${i}" data-col="13" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_lounge_price" value="${rows[i][13] || 0}" data-row="${i}" data-col="14" placeholder="Lounge Price">
+                                <input type="number" id="com_${i}_lounge_time" value="${rows[i][14] || 30}" data-row="${i}" data-col="15" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_study_price" value="${rows[i][15] || 0}" data-row="${i}" data-col="16" placeholder="Study/Library Price">
+                                <input type="number" id="com_${i}_study_time" value="${rows[i][16] || 30}" data-row="${i}" data-col="17" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_laundry_price" value="${rows[i][17] || 0}" data-row="${i}" data-col="18" placeholder="Laundry Room Price">
+                                <input type="number" id="com_${i}_laundry_time" value="${rows[i][18] || 35}" data-row="${i}" data-col="19" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <input type="number" id="com_${i}_store_price" value="${rows[i][19] || 0}" data-row="${i}" data-col="20" placeholder="Store Price">
+                                <input type="number" id="com_${i}_store_time" value="${rows[i][20] || 25}" data-row="${i}" data-col="21" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
+                            
+                            <label style="margin-top: 15px;">Extra Hour Rate (₦):</label>
+                            <input type="number" id="com_${i}_extra" value="${rows[i][21] || 0}" data-row="${i}" data-col="22" placeholder="Extra Hour Rate">
                         </div>
                     `;
                 }
             }
             document.getElementById('commercialPrices').innerHTML = commercialHtml || '<p>No commercial data found</p>';
             
-            // Add-ons
+            // Add-ons with Time Inputs
             let addonsHtml = '';
             for (let i = 16; i <= 49; i++) {
                 if (rows[i] && rows[i][1]) {
                     addonsHtml += `
                         <div class="price-item">
                             <label>${rows[i][1]}</label>
-                            <input type="number" id="addon_${i}" value="${rows[i][2] || 0}" data-row="${i}" data-col="3">
+                            <div class="time-input-group">
+                                <input type="number" id="addon_${i}_price" value="${rows[i][2] || 0}" data-row="${i}" data-col="3" placeholder="Price">
+                                <input type="number" id="addon_${i}_time" value="${rows[i][3] || 30}" data-row="${i}" data-col="4" placeholder="Time (mins)">
+                                <span class="time-badge">mins</span>
+                            </div>
                         </div>
                     `;
                 }
@@ -621,21 +731,46 @@
                     discountsHtml += `
                         <div class="price-item">
                             <label>${rows[i][0]} Discount (%)</label>
-                            <input type="number" id="discount_${i}" value="${rows[i][1] || 0}" data-row="${i}" data-col="2">
+                            <input type="number" id="discount_${i}" value="${rows[i][1] || 0}" data-row="${i}" data-col="2" placeholder="Discount %">
                         </div>
                     `;
                 }
             }
             document.getElementById('discountsPrices').innerHTML = discountsHtml || '<p>No discounts found</p>';
+            
+            // Settings
+            let settingsHtml = `
+                <div class="price-item">
+                    <label>Hours per day:</label>
+                    <input type="number" id="hoursPerDay" value="${rows[61]?.[1] || 8}" data-row="62" data-col="2" min="1" max="24">
+                    <small>Maximum working hours per day</small>
+                </div>
+                <div class="price-item">
+                    <label>Start time:</label>
+                    <input type="text" id="startTime" value="${rows[62]?.[1] || '8:00 AM'}" data-row="63" data-col="2" placeholder="e.g., 8:00 AM">
+                </div>
+                <div class="price-item">
+                    <label>End time:</label>
+                    <input type="text" id="endTime" value="${rows[63]?.[1] || '5:00 PM'}" data-row="64" data-col="2" placeholder="e.g., 5:00 PM">
+                </div>
+                <div class="price-item">
+                    <label>Include weekends:</label>
+                    <select id="includeWeekends" data-row="65" data-col="2">
+                        <option value="Yes" ${rows[64]?.[1] === 'Yes' ? 'selected' : ''}>Yes</option>
+                        <option value="No" ${rows[64]?.[1] !== 'Yes' ? 'selected' : ''}>No</option>
+                    </select>
+                </div>
+            `;
+            document.getElementById('settingsPrices').innerHTML = settingsHtml;
         }
 
-        // Save all prices
-        async function saveAllPrices() {
+        // Save all settings
+        async function saveAllSettings() {
             document.getElementById('loadingOverlay').style.display = 'flex';
             
             const updates = [];
             
-            // Collect all input values
+            // Collect all residential and commercial inputs
             document.querySelectorAll('input[data-row]').forEach(input => {
                 updates.push({
                     row: parseInt(input.dataset.row),
@@ -643,6 +778,52 @@
                     value: parseFloat(input.value) || 0
                 });
             });
+            
+            // Collect select inputs
+            document.querySelectorAll('select[data-row]').forEach(select => {
+                updates.push({
+                    row: parseInt(select.dataset.row),
+                    col: parseInt(select.dataset.col),
+                    value: select.value
+                });
+            });
+            
+            // Add settings inputs that don't have data-row
+            const hoursPerDay = document.getElementById('hoursPerDay');
+            if (hoursPerDay) {
+                updates.push({
+                    row: 62,
+                    col: 2,
+                    value: parseFloat(hoursPerDay.value) || 8
+                });
+            }
+            
+            const startTime = document.getElementById('startTime');
+            if (startTime) {
+                updates.push({
+                    row: 63,
+                    col: 2,
+                    value: startTime.value
+                });
+            }
+            
+            const endTime = document.getElementById('endTime');
+            if (endTime) {
+                updates.push({
+                    row: 64,
+                    col: 2,
+                    value: endTime.value
+                });
+            }
+            
+            const includeWeekends = document.getElementById('includeWeekends');
+            if (includeWeekends) {
+                updates.push({
+                    row: 65,
+                    col: 2,
+                    value: includeWeekends.value
+                });
+            }
             
             try {
                 const response = await fetch(`${CONFIG.API_URL}?action=updatePrices`, {
@@ -664,10 +845,10 @@
                         document.getElementById('successMessage').style.display = 'none';
                     }, 3000);
                 } else {
-                    alert('Error saving prices: ' + (data.error || 'Unknown error'));
+                    alert('Error saving settings: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                alert('Error saving prices: ' + error.message);
+                alert('Error saving settings: ' + error.message);
             } finally {
                 document.getElementById('loadingOverlay').style.display = 'none';
             }
