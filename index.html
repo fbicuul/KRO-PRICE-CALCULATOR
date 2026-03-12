@@ -26,10 +26,11 @@
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
+            position: relative;
         }
-        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header h1 { font-size: 2.2em; margin-bottom: 10px; }
         header h1 i { margin-right: 10px; }
         .form-section { padding: 30px; border-bottom: 1px solid #eee; }
         .form-section h2 { color: #333; margin-bottom: 20px; }
@@ -47,10 +48,11 @@
         }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
+            transition: border-color 0.3s;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
@@ -217,9 +219,13 @@
             font-size: 0.9em;
             margin-left: 10px;
         }
-        .submit-btn {
-            display: block;
-            width: 100%;
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .calculate-btn {
+            flex: 1;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -228,8 +234,9 @@
             font-weight: bold;
             cursor: pointer;
             transition: opacity 0.3s;
+            border-radius: 10px;
         }
-        .submit-btn:hover { opacity: 0.9; }
+        .calculate-btn:hover { opacity: 0.9; }
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -297,84 +304,29 @@
         .close-modal:hover {
             color: #333;
         }
-        .modal h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            padding-right: 30px;
-        }
-        .modal h3 {
-            color: #764ba2;
-            margin: 20px 0 10px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 5px;
-        }
-        .modal ul {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-        }
-        .modal ul li {
-            padding: 8px 0 8px 25px;
-            position: relative;
-            background: #f8f9ff;
-            border-radius: 5px;
-            margin: 2px 0;
-        }
-        .modal ul li:before {
-            content: "✓";
-            color: #667eea;
-            position: absolute;
-            left: 8px;
-            font-weight: bold;
-        }
-        .modal .note {
-            background: #fff3cd;
+        .time-info {
+            background: #e3f2fd;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-top: 20px;
-            font-size: 0.95em;
-            color: #856404;
-            border-left: 4px solid #ffc107;
+            text-align: left;
         }
-        .modal .important-note {
-            background: #f8d7da;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            color: #721c24;
-            border-left: 4px solid #f5c6cb;
+        .time-info h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
         }
-        .modal .ideal-for {
-            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+        .time-info p {
+            margin: 5px 0;
+            color: #555;
         }
-        .modal .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .modal .product-item {
-            background: #f0f3ff;
-            padding: 8px 12px;
-            border-radius: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            color: #667eea;
-            border: 1px solid #667eea20;
-        }
-        .package-badge {
-            display: inline-block;
-            background: #667eea;
+        .schedule-badge {
+            background: #ff9800;
             color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-left: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-top: 10px;
         }
         @media (max-width: 768px) {
             header h1 { font-size: 1.8em; }
@@ -390,7 +342,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-broom"></i> K.R.O Cleaning Service</h1>
-            <p>Get an instant price quote for your cleaning needs</p>
+            <p>Get an instant price quote with time estimation</p>
         </header>
 
         <form id="pricingForm">
@@ -399,22 +351,22 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="fullName">Full Name *</label>
-                        <input type="text" id="fullName" required>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required>
                         <div class="error-message" id="nameError">Please enter your full name</div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address *</label>
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" placeholder="your@email.com" required>
                         <div class="error-message" id="emailError">Please enter a valid email</div>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" required>
+                        <input type="tel" id="phone" placeholder="08012345678" required>
                         <div class="error-message" id="phoneError">Please enter your phone number</div>
                     </div>
                     <div class="form-group">
                         <label for="address">Property Address *</label>
-                        <input type="text" id="address" required>
+                        <input type="text" id="address" placeholder="Full address" required>
                         <div class="error-message" id="addressError">Please enter the property address</div>
                     </div>
                 </div>
@@ -580,20 +532,34 @@
 
             <!-- Price Display -->
             <div class="price-section">
-                <h2>Estimated Price</h2>
+                <h2>Your Quote & Schedule</h2>
                 <div class="price-box">
                     <span id="totalPrice">₦0</span>
                 </div>
                 <div class="price-breakdown" id="priceBreakdown"></div>
+                
+                <!-- Time & Schedule Information -->
+                <div id="timeInfo" class="time-info" style="display: none;">
+                    <h4><i class="fas fa-clock"></i> Estimated Schedule</h4>
+                    <p><strong>Total Time:</strong> <span id="totalMinutes"></span> minutes (<span id="totalHours"></span> hours)</p>
+                    <p><strong>Working Days:</strong> <span id="workingHoursPerDay"></span> hours per day</p>
+                    <p><strong>Days Required:</strong> <span id="daysRequired"></span> day(s)</p>
+                    <div id="scheduleDetails"></div>
+                    <div id="multiDayBadge" class="schedule-badge" style="display: none;">
+                        <i class="fas fa-calendar-alt"></i> Multi-day booking
+                    </div>
+                </div>
             </div>
 
             <div class="success-message" id="successMessage">
                 <i class="fas fa-check-circle"></i> Quote submitted successfully! We'll contact you shortly.
             </div>
 
-            <button type="button" id="submitBtn" class="submit-btn">
-                <i class="fas fa-paper-plane"></i> Get Quote & Submit
-            </button>
+            <div class="button-group">
+                <button type="button" id="calculateBtn" class="calculate-btn">
+                    <i class="fas fa-calculator"></i> Calculate Price & Time
+                </button>
+            </div>
         </form>
     </div>
 
@@ -609,17 +575,18 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
-            <h3>Loading pricing data...</h3>
+            <h3>Processing...</h3>
         </div>
     </div>
 
     <script>
         // CONFIG - Using single API URL
         const CONFIG = window.KRO_CONFIG || {
-            API_URL: 'https://script.google.com/macros/s/AKfycbwEmtf3XfhBfGw9RJriRbHs5_1A3mbaN31IvE5lmhR6lKRz25DKM9pvDFTcm_ZKcxQ/exec',
+            API_URL: 'https://script.google.com/macros/s/AKfycbyb4JRHF-6H0V7JGmRdHOJ2mCqvoQ4ob3T2RzecRE8wgcY5MIan3tvCIYjyLcg5PRzU/exec',
             API_SECRET_TOKEN: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74',
             CURRENCY: '₦',
-            COMPANY_PHONE: '+234 704 918 9964'
+            COMPANY_PHONE: '+234 704 918 9964',
+            COMPANY_NAME: 'K.R.O Cleaning Service'
         };
 
         // Stain remover pricing (base values)
@@ -636,7 +603,7 @@
             }
         };
 
-        // Package information from PDFs
+        // Package information from PDFs (keep your existing packageInfo object)
         const packageInfo = {
             'residential-standard': {
                 title: 'Standard Cleaning Package',
@@ -1018,67 +985,116 @@
             residential: {
                 standard: { 
                     base: 9000, 
+                    baseTime: 180, // 3 hours in minutes
                     extraHourRate: 2800,
                     rooms: { 
-                        bedroom: 1300, bathroom: 1000, living: 1200, kitchen: 1500,
-                        guestToilet: 800, laundry: 800, study: 800, store: 800,
-                        office: 800
+                        bedroom: { price: 1300, time: 30 },
+                        bathroom: { price: 1000, time: 25 },
+                        living: { price: 1200, time: 30 },
+                        kitchen: { price: 1500, time: 40 },
+                        guestToilet: { price: 800, time: 20 },
+                        laundry: { price: 800, time: 25 },
+                        study: { price: 800, time: 25 },
+                        store: { price: 800, time: 20 },
+                        office: { price: 800, time: 25 }
                     } 
                 },
                 deep: { 
                     base: 41400, 
+                    baseTime: 240, // 4 hours in minutes
                     extraHourRate: 3800,
                     rooms: { 
-                        bedroom: 4400, bathroom: 4100, living: 4200, kitchen: 4600,
-                        guestToilet: 2800, laundry: 5600, study: 5600, store: 5700,
-                        office: 4400
+                        bedroom: { price: 4400, time: 45 },
+                        bathroom: { price: 4100, time: 40 },
+                        living: { price: 4200, time: 45 },
+                        kitchen: { price: 4600, time: 60 },
+                        guestToilet: { price: 2800, time: 30 },
+                        laundry: { price: 5600, time: 45 },
+                        study: { price: 5600, time: 45 },
+                        store: { price: 5700, time: 40 },
+                        office: { price: 4400, time: 40 }
                     } 
                 },
                 movein: { 
                     base: 51000, 
+                    baseTime: 300, // 5 hours in minutes
                     extraHourRate: 3800,
                     rooms: { 
-                        bedroom: 5000, bathroom: 4800, living: 5000, kitchen: 5200,
-                        guestToilet: 3300, laundry: 7300, study: 7800, store: 6800,
-                        office: 5800
+                        bedroom: { price: 5000, time: 50 },
+                        bathroom: { price: 4800, time: 45 },
+                        living: { price: 5000, time: 50 },
+                        kitchen: { price: 5200, time: 70 },
+                        guestToilet: { price: 3300, time: 35 },
+                        laundry: { price: 7300, time: 60 },
+                        study: { price: 7800, time: 60 },
+                        store: { price: 6800, time: 50 },
+                        office: { price: 5800, time: 50 }
                     } 
                 }
             },
             commercial: {
                 small: { 
                     base: 45000, 
+                    baseTime: 240, // 4 hours in minutes
                     extraHourRate: 5800,
                     rooms: { 
-                        office: 10000, restroom: 19000, reception: 16000,
-                        kitchenette: 5000, canteen: 14500, lounge: 10000,
-                        studyLibrary: 8000, laundryRoom: 10000, store: 8000
+                        office: { price: 10000, time: 40 },
+                        restroom: { price: 19000, time: 35 },
+                        reception: { price: 16000, time: 30 },
+                        kitchenette: { price: 5000, time: 25 },
+                        canteen: { price: 14500, time: 60 },
+                        lounge: { price: 10000, time: 30 },
+                        studyLibrary: { price: 8000, time: 30 },
+                        laundryRoom: { price: 10000, time: 35 },
+                        store: { price: 8000, time: 25 }
                     } 
                 },
                 standard: { 
                     base: 96000, 
+                    baseTime: 300, // 5 hours in minutes
                     extraHourRate: 9500,
                     rooms: { 
-                        office: 27000, restroom: 36000, reception: 33000,
-                        kitchenette: 9000, canteen: 20500, lounge: 19000,
-                        studyLibrary: 18000, laundryRoom: 20000, store: 18000
+                        office: { price: 27000, time: 50 },
+                        restroom: { price: 36000, time: 45 },
+                        reception: { price: 33000, time: 40 },
+                        kitchenette: { price: 9000, time: 35 },
+                        canteen: { price: 20500, time: 70 },
+                        lounge: { price: 19000, time: 40 },
+                        studyLibrary: { price: 18000, time: 40 },
+                        laundryRoom: { price: 20000, time: 45 },
+                        store: { price: 18000, time: 35 }
                     } 
                 },
                 large: { 
                     base: 150000, 
+                    baseTime: 360, // 6 hours in minutes
                     extraHourRate: 14000,
                     rooms: { 
-                        office: 45000, restroom: 54000, reception: 51000,
-                        kitchenette: 15000, canteen: 35000, lounge: 29900,
-                        studyLibrary: 29000, laundryRoom: 31000, store: 29500
+                        office: { price: 45000, time: 60 },
+                        restroom: { price: 54000, time: 50 },
+                        reception: { price: 51000, time: 45 },
+                        kitchenette: { price: 15000, time: 40 },
+                        canteen: { price: 35000, time: 80 },
+                        lounge: { price: 29900, time: 45 },
+                        studyLibrary: { price: 29000, time: 45 },
+                        laundryRoom: { price: 31000, time: 50 },
+                        store: { price: 29500, time: 40 }
                     } 
                 },
                 onetime: { 
                     base: 249000, 
+                    baseTime: 420, // 7 hours in minutes
                     extraHourRate: 20000,
                     rooms: { 
-                        office: 78000, restroom: 87000, reception: 84000,
-                        kitchenette: 22500, canteen: 41000, lounge: 34000,
-                        studyLibrary: 0, laundryRoom: 36800, store: 35000
+                        office: { price: 78000, time: 70 },
+                        restroom: { price: 87000, time: 60 },
+                        reception: { price: 84000, time: 55 },
+                        kitchenette: { price: 22500, time: 50 },
+                        canteen: { price: 41000, time: 90 },
+                        lounge: { price: 34000, time: 50 },
+                        studyLibrary: { price: 0, time: 0 },
+                        laundryRoom: { price: 36800, time: 55 },
+                        store: { price: 35000, time: 45 }
                     } 
                 }
             }
@@ -1087,6 +1103,13 @@
         let addons = {
             residential: [],
             commercial: []
+        };
+
+        let workingHours = {
+            hoursPerDay: 8,
+            startTime: '8:00 AM',
+            endTime: '5:00 PM',
+            includeWeekends: 'No'
         };
 
         const frequencyDiscounts = {
@@ -1110,7 +1133,7 @@
         const frequencySelect = document.getElementById('frequency');
         const totalPriceSpan = document.getElementById('totalPrice');
         const priceBreakdown = document.getElementById('priceBreakdown');
-        const submitBtn = document.getElementById('submitBtn');
+        const calculateBtn = document.getElementById('calculateBtn');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const successMessage = document.getElementById('successMessage');
         const modal = document.getElementById('packageModal');
@@ -1118,12 +1141,20 @@
         const residentialOption = document.getElementById('residentialOption');
         const commercialOption = document.getElementById('commercialOption');
         const stainRemoverSelect = document.getElementById('stainRemover');
+        const timeInfo = document.getElementById('timeInfo');
+        const totalMinutesSpan = document.getElementById('totalMinutes');
+        const totalHoursSpan = document.getElementById('totalHours');
+        const workingHoursPerDaySpan = document.getElementById('workingHoursPerDay');
+        const daysRequiredSpan = document.getElementById('daysRequired');
+        const scheduleDetails = document.getElementById('scheduleDetails');
+        const multiDayBadge = document.getElementById('multiDayBadge');
 
         let currentPropertyType = 'residential';
         let currentResidentialPackage = 'standard';
         let currentCommercialPackage = 'small';
+        let currentTotal = 0;
 
-        // Load pricing data from Google Sheets (SINGLE API)
+        // Load pricing data from Google Sheets
         async function loadPricingData() {
             loadingOverlay.style.display = 'flex';
             try {
@@ -1131,20 +1162,19 @@
                 const data = await response.json();
                 if (data.result === 'success' && data.data) {
                     pricing = data.data;
+                    if (data.data.workingHours) {
+                        workingHours = data.data.workingHours;
+                    }
                     updatePackages();
                     updateAddons();
-                    calculatePrice();
                 } else {
-                    // Use defaults if API fails
                     updatePackages();
                     updateAddons();
-                    calculatePrice();
                 }
             } catch (error) {
                 console.log('Using default pricing data');
                 updatePackages();
                 updateAddons();
-                calculatePrice();
             } finally {
                 loadingOverlay.style.display = 'none';
             }
@@ -1197,10 +1227,13 @@
             commercialPackagesGrid.innerHTML = commercialHtml;
         }
 
-        function calculateTotalHours() {
-            let totalRooms = 0;
+        function calculateTotalTime() {
+            let totalMinutes = 0;
             
             if (currentPropertyType === 'residential') {
+                const pkg = pricing.residential[currentResidentialPackage];
+                totalMinutes += pkg.baseTime || 180; // Add base time
+                
                 const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 1;
                 const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 1;
                 const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 1;
@@ -1210,8 +1243,19 @@
                 const study = parseInt(document.getElementById('study')?.value) || 0;
                 const store = parseInt(document.getElementById('store')?.value) || 0;
                 
-                totalRooms = bedrooms + bathrooms + livingrooms + kitchens + guestToilet + laundry + study + store;
+                totalMinutes += bedrooms * (pkg.rooms.bedroom?.time || 30);
+                totalMinutes += bathrooms * (pkg.rooms.bathroom?.time || 25);
+                totalMinutes += livingrooms * (pkg.rooms.living?.time || 30);
+                totalMinutes += kitchens * (pkg.rooms.kitchen?.time || 40);
+                totalMinutes += guestToilet * (pkg.rooms.guestToilet?.time || 20);
+                totalMinutes += laundry * (pkg.rooms.laundry?.time || 25);
+                totalMinutes += study * (pkg.rooms.study?.time || 25);
+                totalMinutes += store * (pkg.rooms.store?.time || 20);
+                
             } else {
+                const pkg = pricing.commercial[currentCommercialPackage];
+                totalMinutes += pkg.baseTime || 240; // Add base time
+                
                 const offices = parseInt(document.getElementById('offices')?.value) || 1;
                 const restrooms = parseInt(document.getElementById('restrooms')?.value) || 1;
                 const reception = parseInt(document.getElementById('reception')?.value) || 0;
@@ -1222,33 +1266,48 @@
                 const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
                 const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
                 
-                totalRooms = offices + restrooms + reception + kitchenette + canteen + lounge + 
-                             studyLibrary + laundryRoom + storeRoom;
+                totalMinutes += offices * (pkg.rooms.office?.time || 40);
+                totalMinutes += restrooms * (pkg.rooms.restroom?.time || 35);
+                totalMinutes += reception * (pkg.rooms.reception?.time || 30);
+                totalMinutes += kitchenette * (pkg.rooms.kitchenette?.time || 25);
+                totalMinutes += canteen * (pkg.rooms.canteen?.time || 60);
+                totalMinutes += lounge * (pkg.rooms.lounge?.time || 30);
+                totalMinutes += studyLibrary * (pkg.rooms.studyLibrary?.time || 30);
+                totalMinutes += laundryRoom * (pkg.rooms.laundryRoom?.time || 35);
+                totalMinutes += storeRoom * (pkg.rooms.store?.time || 25);
             }
             
-            // Base: 3 hours + 1 hour per additional room beyond the 4 basic rooms
-            const baseHours = 3;
-            const additionalHours = Math.max(0, totalRooms - 4);
-            return baseHours + additionalHours;
+            // Add add-ons time
+            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => {
+                totalMinutes += parseInt(cb.dataset.time) || 0;
+            });
+            
+            return totalMinutes;
         }
 
-        function calculateRequiredCleaners(totalHours) {
-            if (totalHours <= 3) return 1;
-            if (totalHours <= 6) return 2;
-            if (totalHours <= 9) return 3;
-            if (totalHours <= 12) return 4;
-            if (totalHours <= 14) return 5;
-            return 6;
+        function calculateRequiredCleaners(totalMinutes) {
+            const hours = totalMinutes / 60;
+            if (hours <= 3) return 1;
+            if (hours <= 6) return 2;
+            if (hours <= 9) return 3;
+            if (hours <= 12) return 4;
+            if (hours <= 15) return 5;
+            return Math.ceil(hours / 3);
+        }
+
+        function calculateDaysRequired(totalMinutes) {
+            const hoursPerDay = workingHours.hoursPerDay || 8;
+            const totalHours = totalMinutes / 60;
+            return Math.ceil(totalHours / hoursPerDay);
         }
 
         function calculateStainRemoverCost() {
             const stainType = stainRemoverSelect.value;
             if (stainType === 'none') return 0;
             
-            const totalHours = calculateTotalHours();
-            const requiredCleaners = calculateRequiredCleaners(totalHours);
+            const totalHours = calculateTotalTime() / 60;
+            const requiredCleaners = calculateRequiredCleaners(calculateTotalTime());
             
-            // Stain remover cost scales with hours and cleaners
             let basePrice = 0;
             if (currentPropertyType === 'residential') {
                 basePrice = stainRemoverPrices.residential[stainType] || 0;
@@ -1256,9 +1315,7 @@
                 basePrice = stainRemoverPrices.commercial[stainType] || 0;
             }
             
-            // Multiply by hours factor (1.0 for base 3 hours, +0.1 per additional hour)
             const hourFactor = 1 + (Math.max(0, totalHours - 3) * 0.1);
-            // Multiply by cleaners factor
             const cleanerFactor = requiredCleaners;
             
             return Math.round(basePrice * hourFactor * cleanerFactor);
@@ -1280,21 +1337,23 @@
                 const study = parseInt(document.getElementById('study')?.value) || 0;
                 const store = parseInt(document.getElementById('store')?.value) || 0;
                 
-                roomCosts = (bedrooms * pkg.rooms.bedroom) + (bathrooms * pkg.rooms.bathroom) +
-                           (livingrooms * pkg.rooms.living) + (kitchens * pkg.rooms.kitchen) +
-                           (guestToilet * (pkg.rooms.guestToilet || 0)) +
-                           (laundry * (pkg.rooms.laundry || 0)) +
-                           (study * (pkg.rooms.study || 0)) +
-                           (store * (pkg.rooms.store || 0));
+                roomCosts = (bedrooms * pkg.rooms.bedroom?.price || 0) + 
+                           (bathrooms * pkg.rooms.bathroom?.price || 0) +
+                           (livingrooms * pkg.rooms.living?.price || 0) + 
+                           (kitchens * pkg.rooms.kitchen?.price || 0) +
+                           (guestToilet * (pkg.rooms.guestToilet?.price || 0)) +
+                           (laundry * (pkg.rooms.laundry?.price || 0)) +
+                           (study * (pkg.rooms.study?.price || 0)) +
+                           (store * (pkg.rooms.store?.price || 0));
                 
-                if (bedrooms > 0) breakdown.push({ item: `Bedrooms (${bedrooms})`, cost: bedrooms * pkg.rooms.bedroom });
-                if (bathrooms > 0) breakdown.push({ item: `Bathrooms (${bathrooms})`, cost: bathrooms * pkg.rooms.bathroom });
-                if (livingrooms > 0) breakdown.push({ item: `Living Rooms (${livingrooms})`, cost: livingrooms * pkg.rooms.living });
-                if (kitchens > 0) breakdown.push({ item: `Kitchens (${kitchens})`, cost: kitchens * pkg.rooms.kitchen });
-                if (guestToilet > 0) breakdown.push({ item: `Guest Toilet (${guestToilet})`, cost: guestToilet * pkg.rooms.guestToilet });
-                if (laundry > 0) breakdown.push({ item: `Laundry (${laundry})`, cost: laundry * pkg.rooms.laundry });
-                if (study > 0) breakdown.push({ item: `Study (${study})`, cost: study * pkg.rooms.study });
-                if (store > 0) breakdown.push({ item: `Store (${store})`, cost: store * pkg.rooms.store });
+                if (bedrooms > 0) breakdown.push({ item: `Bedrooms (${bedrooms})`, cost: bedrooms * pkg.rooms.bedroom.price });
+                if (bathrooms > 0) breakdown.push({ item: `Bathrooms (${bathrooms})`, cost: bathrooms * pkg.rooms.bathroom.price });
+                if (livingrooms > 0) breakdown.push({ item: `Living Rooms (${livingrooms})`, cost: livingrooms * pkg.rooms.living.price });
+                if (kitchens > 0) breakdown.push({ item: `Kitchens (${kitchens})`, cost: kitchens * pkg.rooms.kitchen.price });
+                if (guestToilet > 0) breakdown.push({ item: `Guest Toilet (${guestToilet})`, cost: guestToilet * pkg.rooms.guestToilet.price });
+                if (laundry > 0) breakdown.push({ item: `Laundry (${laundry})`, cost: laundry * pkg.rooms.laundry.price });
+                if (study > 0) breakdown.push({ item: `Study (${study})`, cost: study * pkg.rooms.study.price });
+                if (store > 0) breakdown.push({ item: `Store (${store})`, cost: store * pkg.rooms.store.price });
                 
             } else {
                 const pkg = pricing.commercial[currentCommercialPackage];
@@ -1310,49 +1369,50 @@
                 const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
                 const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
                 
-                roomCosts = (offices * pkg.rooms.office) + (restrooms * pkg.rooms.restroom) + 
-                           (reception * (pkg.rooms.reception || 0)) +
-                           (kitchenette * (pkg.rooms.kitchenette || 0)) +
-                           (canteen * (pkg.rooms.canteen || 0)) +
-                           (lounge * (pkg.rooms.lounge || 0)) +
-                           (studyLibrary * (pkg.rooms.studyLibrary || 0)) +
-                           (laundryRoom * (pkg.rooms.laundryRoom || 0)) +
-                           (storeRoom * (pkg.rooms.store || 0));
+                roomCosts = (offices * pkg.rooms.office?.price || 0) + 
+                           (restrooms * pkg.rooms.restroom?.price || 0) + 
+                           (reception * (pkg.rooms.reception?.price || 0)) +
+                           (kitchenette * (pkg.rooms.kitchenette?.price || 0)) +
+                           (canteen * (pkg.rooms.canteen?.price || 0)) +
+                           (lounge * (pkg.rooms.lounge?.price || 0)) +
+                           (studyLibrary * (pkg.rooms.studyLibrary?.price || 0)) +
+                           (laundryRoom * (pkg.rooms.laundryRoom?.price || 0)) +
+                           (storeRoom * (pkg.rooms.store?.price || 0));
                 
-                if (offices > 0) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg.rooms.office });
-                if (restrooms > 0) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg.rooms.restroom });
-                if (reception > 0) breakdown.push({ item: 'Reception', cost: pkg.rooms.reception });
-                if (kitchenette > 0) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * pkg.rooms.kitchenette });
-                if (canteen > 0) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * pkg.rooms.canteen });
-                if (lounge > 0) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * pkg.rooms.lounge });
-                if (studyLibrary > 0) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * pkg.rooms.studyLibrary });
-                if (laundryRoom > 0) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * pkg.rooms.laundryRoom });
-                if (storeRoom > 0) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * pkg.rooms.store });
+                if (offices > 0) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg.rooms.office.price });
+                if (restrooms > 0) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg.rooms.restroom.price });
+                if (reception > 0) breakdown.push({ item: 'Reception', cost: pkg.rooms.reception.price });
+                if (kitchenette > 0) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * pkg.rooms.kitchenette.price });
+                if (canteen > 0) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * pkg.rooms.canteen.price });
+                if (lounge > 0) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * pkg.rooms.lounge.price });
+                if (studyLibrary > 0) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * pkg.rooms.studyLibrary.price });
+                if (laundryRoom > 0) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * pkg.rooms.laundryRoom.price });
+                if (storeRoom > 0) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * pkg.rooms.store.price });
             }
             
-            // Calculate hours and required cleaners
-            const totalHours = calculateTotalHours();
+            // Calculate total minutes and days
+            const totalMinutes = calculateTotalTime();
+            const totalHours = totalMinutes / 60;
+            const daysRequired = calculateDaysRequired(totalMinutes);
+            const requiredCleaners = calculateRequiredCleaners(totalMinutes);
             
-            if (totalHours > 14) {
-                alert('Total cleaning time exceeds 14 hours. Please contact us directly for a custom quote.');
-                return 0;
-            }
-            
-            const requiredCleaners = calculateRequiredCleaners(totalHours);
-            
-            // Add extra hours cost
+            // Add extra hours cost if over base time
             let extraHoursCost = 0;
-            if (totalHours > 3) {
-                const extraHours = totalHours - 3;
+            const baseTime = currentPropertyType === 'residential' ? 
+                (pricing.residential[currentResidentialPackage].baseTime || 180) / 60 :
+                (pricing.commercial[currentCommercialPackage].baseTime || 240) / 60;
+            
+            if (totalHours > baseTime) {
+                const extraHours = totalHours - baseTime;
                 const extraHourRate = currentPropertyType === 'residential' ? 
                     pricing.residential[currentResidentialPackage].extraHourRate :
                     pricing.commercial[currentCommercialPackage].extraHourRate;
                 extraHoursCost = extraHours * extraHourRate;
-                breakdown.push({ item: `Extra Hours (${extraHours} hrs)`, cost: extraHoursCost });
+                breakdown.push({ item: `Extra Hours (${extraHours.toFixed(1)} hrs)`, cost: extraHoursCost });
             }
             
             // Add auto-calculated additional cleaners
-            let additionalCleanersAuto = requiredCleaners - 1; // Subtract the first cleaner
+            let additionalCleanersAuto = requiredCleaners - 1;
             if (additionalCleanersAuto > 0) {
                 const cleanerCost = currentPropertyType === 'residential' ? 
                     additionalCleanersAuto * 5000 :
@@ -1401,9 +1461,26 @@
             
             if (discountPercent > 0) breakdown.push({ item: `Discount (${discountPercent}%)`, cost: -discountAmount });
             
-            // Add hours and cleaners info to breakdown
-            breakdown.push({ item: `Estimated Time`, cost: `${totalHours} hours` });
+            // Add time and schedule info
+            breakdown.push({ item: `Total Time`, cost: `${Math.round(totalMinutes)} mins (${totalHours.toFixed(1)} hrs)` });
+            breakdown.push({ item: `Working Days`, cost: daysRequired.toString() });
             breakdown.push({ item: `Required Cleaners`, cost: requiredCleaners.toString() });
+            
+            // Update time info display
+            totalMinutesSpan.textContent = Math.round(totalMinutes);
+            totalHoursSpan.textContent = totalHours.toFixed(1);
+            workingHoursPerDaySpan.textContent = workingHours.hoursPerDay || 8;
+            daysRequiredSpan.textContent = daysRequired;
+            
+            if (daysRequired > 1) {
+                multiDayBadge.style.display = 'inline-block';
+                scheduleDetails.innerHTML = `<p><strong>Schedule:</strong> This job will take approximately ${daysRequired} days (${workingHours.hoursPerDay} hours per day)</p>`;
+            } else {
+                multiDayBadge.style.display = 'none';
+                scheduleDetails.innerHTML = '';
+            }
+            
+            timeInfo.style.display = 'block';
             
             totalPriceSpan.textContent = `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`;
             
@@ -1418,17 +1495,16 @@
             breakdownHtml += `<div class="breakdown-item total"><span>Total</span><span>${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}</span></div>`;
             priceBreakdown.innerHTML = breakdownHtml;
             
+            currentTotal = total;
             return total;
         }
 
-        // Package selection functions
         window.selectResidentialPackage = function(pkgId) {
             currentResidentialPackage = pkgId;
             document.querySelectorAll('input[name="residentialPackage"]').forEach(radio => {
                 if (radio.value === pkgId) radio.checked = true;
             });
             updatePackages();
-            calculatePrice();
             showPackageInfo('residential-' + pkgId);
         };
 
@@ -1438,11 +1514,9 @@
                 if (radio.value === pkgId) radio.checked = true;
             });
             updatePackages();
-            calculatePrice();
             showPackageInfo('commercial-' + pkgId);
         };
 
-        // Modal functions
         window.showPackageInfo = function(packageId) {
             const info = packageInfo[packageId];
             if (!info) return;
@@ -1509,7 +1583,6 @@
             }
         };
 
-        // Property type selection
         residentialOption.addEventListener('click', function() {
             document.querySelector('input[name="propertyType"][value="residential"]').checked = true;
             residentialOption.classList.add('selected');
@@ -1520,7 +1593,6 @@
             residentialDetails.style.display = 'block';
             commercialDetails.style.display = 'none';
             updateAddons();
-            calculatePrice();
         });
 
         commercialOption.addEventListener('click', function() {
@@ -1533,47 +1605,43 @@
             residentialDetails.style.display = 'none';
             commercialDetails.style.display = 'block';
             updateAddons();
-            calculatePrice();
         });
 
-        
-        // Initialize with residential selected
         residentialOption.classList.add('selected');
 
         function updateAddons() {
             const addonsList = currentPropertyType === 'residential' ? addons.residential : addons.commercial;
             let html = '';
             
-            // Use default addons if not loaded from sheet
             const defaultAddons = currentPropertyType === 'residential' ? 
                 [
-                    { name: "Balcony Cleaning", price: 1000 },
-                    { name: "Window Cleaning", price: 1400 },
-                    { name: "Fridge Cleaning", price: 700 },
-                    { name: "Fan Cleaning", price: 700 },
-                    { name: "Oven Cleaning", price: 700 },
-                    { name: "Kitchen Cabinet", price: 1000 },
-                    { name: "Wall Cleaning", price: 2000 },
-                    { name: "Ironing", price: 5600 },
-                    { name: "Laundry", price: 2800 },
-                    { name: "Wardrobe Organization", price: 4200 },
-                    { name: "Compound Cleaning", price: 2800 },
-                    { name: "Miscellaneous Hour", price: 2800 }
+                    { name: "Balcony Cleaning", price: 1000, time: 42 },
+                    { name: "Window Cleaning", price: 1400, time: 60 },
+                    { name: "Fridge Cleaning", price: 700, time: 30 },
+                    { name: "Fan Cleaning", price: 700, time: 30 },
+                    { name: "Oven Cleaning", price: 700, time: 30 },
+                    { name: "Kitchen Cabinet", price: 1000, time: 42 },
+                    { name: "Wall Cleaning", price: 2000, time: 84 },
+                    { name: "Ironing", price: 5600, time: 120 },
+                    { name: "Laundry", price: 2800, time: 120 },
+                    { name: "Wardrobe Organization", price: 4200, time: 180 },
+                    { name: "Compound Cleaning", price: 2800, time: 60 },
+                    { name: "Miscellaneous Hour", price: 2800, time: 60 }
                 ] : [
-                    { name: "Kitchenette", price: 5000 },
-                    { name: "Canteen", price: 14500 },
-                    { name: "Lounge", price: 10000 },
-                    { name: "Study/Library", price: 8000 },
-                    { name: "Laundry Room", price: 10000 },
-                    { name: "Store", price: 8000 },
-                    { name: "Balcony Cleaning", price: 3000 },
-                    { name: "Window Cleaning", price: 4500 },
-                    { name: "Fridge Cleaning", price: 1500 },
-                    { name: "Fan Cleaning", price: 1500 },
-                    { name: "Kitchen Cabinet", price: 2000 },
-                    { name: "Wall Cleaning", price: 9500 },
-                    { name: "Compound Cleaning", price: 5800 },
-                    { name: "Miscellaneous Hour", price: 5800 }
+                    { name: "Kitchenette", price: 5000, time: 60 },
+                    { name: "Canteen", price: 14500, time: 180 },
+                    { name: "Lounge", price: 10000, time: 60 },
+                    { name: "Study/Library", price: 8000, time: 60 },
+                    { name: "Laundry Room", price: 10000, time: 60 },
+                    { name: "Store", price: 8000, time: 60 },
+                    { name: "Balcony Cleaning", price: 3000, time: 42 },
+                    { name: "Window Cleaning", price: 4500, time: 60 },
+                    { name: "Fridge Cleaning", price: 1500, time: 30 },
+                    { name: "Fan Cleaning", price: 1500, time: 30 },
+                    { name: "Kitchen Cabinet", price: 2000, time: 42 },
+                    { name: "Wall Cleaning", price: 9500, time: 90 },
+                    { name: "Compound Cleaning", price: 5800, time: 60 },
+                    { name: "Miscellaneous Hour", price: 5800, time: 60 }
                 ];
             
             const displayAddons = addonsList.length > 0 ? addonsList : defaultAddons;
@@ -1581,7 +1649,7 @@
             displayAddons.forEach((addon) => {
                 html += `
                     <label class="addon-item">
-                        <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}">
+                        <input type="checkbox" class="addon-checkbox" data-price="${addon.price}" data-name="${addon.name}" data-time="${addon.time || 30}">
                         <span class="addon-name">${addon.name}</span>
                         <span class="addon-price">${CONFIG.CURRENCY}${addon.price.toLocaleString()}</span>
                     </label>
@@ -1589,7 +1657,9 @@
             });
             
             addonsContainer.innerHTML = html;
-            document.querySelectorAll('.addon-checkbox').forEach(cb => cb.addEventListener('change', calculatePrice));
+            document.querySelectorAll('.addon-checkbox').forEach(cb => cb.addEventListener('change', function() {
+                // Just mark that changes occurred, calculation happens when Calculate button is clicked
+            }));
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1604,12 +1674,24 @@
             
             inputs.forEach(id => {
                 const element = document.getElementById(id);
-                if (element) element.addEventListener('input', calculatePrice);
+                if (element) element.addEventListener('input', function() {
+                    // Just mark that changes occurred, calculation happens when Calculate button is clicked
+                });
             });
 
-            frequencySelect.addEventListener('change', calculatePrice);
-            stainRemoverSelect.addEventListener('change', calculatePrice);
-            submitBtn.addEventListener('click', submitForm);
+            frequencySelect.addEventListener('change', function() {
+                // Just mark that changes occurred, calculation happens when Calculate button is clicked
+            });
+            
+            stainRemoverSelect.addEventListener('change', function() {
+                // Just mark that changes occurred, calculation happens when Calculate button is clicked
+            });
+            
+            calculateBtn.addEventListener('click', function() {
+                if (validateForm()) {
+                    calculatePrice();
+                }
+            });
         }
 
         function validateForm() {
@@ -1633,87 +1715,12 @@
                 document.getElementById('addressError').style.display = 'block';
                 isValid = false;
             }
+            
+            if (!isValid) {
+                alert('Please fill in all required fields');
+            }
+            
             return isValid;
-        }
-
-        function submitForm() {
-            if (!validateForm()) return;
-            
-            loadingOverlay.style.display = 'flex';
-            const total = calculatePrice();
-            
-            if (total === 0) {
-                loadingOverlay.style.display = 'none';
-                return;
-            }
-            
-            const selectedAddons = [];
-            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => selectedAddons.push(cb.dataset.name));
-            
-            // Add stain remover if selected
-            if (stainRemoverSelect.value !== 'none') {
-                selectedAddons.push(stainRemoverSelect.options[stainRemoverSelect.selectedIndex].text);
-            }
-            
-            // Get room details string
-            let roomsString = '';
-            if (currentPropertyType === 'residential') {
-                roomsString = `Bed:${document.getElementById('bedrooms').value}, Bath:${document.getElementById('bathrooms').value}, ` +
-                             `Living:${document.getElementById('livingrooms').value}, Kitchen:${document.getElementById('kitchens').value}, ` +
-                             `Guest Toilet:${document.getElementById('guestToilet').value}, Laundry:${document.getElementById('laundry').value}, ` +
-                             `Study:${document.getElementById('study').value}, Store:${document.getElementById('store').value}`;
-            } else {
-                roomsString = `Offices:${document.getElementById('offices').value}, Restrooms:${document.getElementById('restrooms').value}, ` +
-                             `Reception:${document.getElementById('reception').value === '1' ? 'Yes' : 'No'}, ` +
-                             `Kitchenette:${document.getElementById('commercialKitchen').value}, Canteen:${document.getElementById('canteen').value}, ` +
-                             `Lounge:${document.getElementById('lounge').value}, Study/Library:${document.getElementById('studyLibrary').value}, ` +
-                             `Laundry Room:${document.getElementById('laundryRoom').value}, Store Room:${document.getElementById('storeRoom').value}`;
-            }
-            
-            const formData = new URLSearchParams({
-                action: 'submitQuote',
-                secretToken: CONFIG.API_SECRET_TOKEN,
-                fullName: document.getElementById('fullName').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                address: document.getElementById('address').value.trim(),
-                propertyType: currentPropertyType === 'residential' ? 'Residential' : 'Commercial',
-                package: currentPropertyType === 'residential' ? 
-                    (currentResidentialPackage === 'standard' ? 'Standard Cleaning' : 
-                     currentResidentialPackage === 'deep' ? 'Deep Cleaning' : 'Move-In Cleaning') :
-                    (currentCommercialPackage === 'small' ? 'Small Office' :
-                     currentCommercialPackage === 'standard' ? 'Standard Office' :
-                     currentCommercialPackage === 'large' ? 'Large Office' : 'One-Time Deep Clean'),
-                frequency: frequencySelect.options[frequencySelect.selectedIndex].text,
-                rooms: roomsString,
-                addons: selectedAddons.join(', ') || 'None',
-                additionalCleaners: document.getElementById('additionalCleaners').value || '0',
-                totalHours: calculateTotalHours().toString(),
-                requiredCleaners: calculateRequiredCleaners(calculateTotalHours()).toString(),
-                totalAmount: `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`
-            });
-
-            const script = document.createElement('script');
-            const callbackName = 'jsonpCallback_' + Date.now();
-            
-            window[callbackName] = function(response) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                loadingOverlay.style.display = 'none';
-                if (response && response.result === 'success') {
-                    successMessage.style.display = 'block';
-                    setTimeout(() => successMessage.style.display = 'none', 3000);
-                } else {
-                    alert('Error submitting quote. Please call ' + CONFIG.COMPANY_PHONE);
-                }
-            };
-            
-            script.src = CONFIG.API_URL + '?callback=' + callbackName + '&' + formData.toString();
-            script.onerror = function() {
-                loadingOverlay.style.display = 'none';
-                alert('Error submitting. Please call ' + CONFIG.COMPANY_PHONE);
-            };
-            document.body.appendChild(script);
         }
     </script>
 </body>
