@@ -13,12 +13,8 @@
     
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- Configuration -->
-    <script src="config.js"></script>
 
     <style>
-        /* Keep your existing styles here */
         * {
             margin: 0;
             padding: 0;
@@ -1090,36 +1086,44 @@
             color: #667eea;
         }
 
-        /* Error Message */
+        /* Error Container */
         .error-container {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
         }
 
         .error-container i {
-            font-size: 4rem;
+            font-size: 5rem;
             color: #ff6b6b;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .error-container h3 {
             color: #ff6b6b;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
         }
 
         .error-container p {
             color: #666;
             margin-bottom: 2rem;
+            font-size: 1.1rem;
         }
 
         .error-container button {
             padding: 1rem 2rem;
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .error-container button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
 
         /* Footer */
@@ -1220,6 +1224,11 @@
                 font-size: 3rem;
             }
 
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
             .hero-stats {
                 flex-direction: column;
                 gap: 1rem;
@@ -1264,8 +1273,7 @@
                     <i class="fas fa-broom"></i>
                 </div>
                 <div class="logo-text">
-                    KRO Media
-                    <span>Cleaning Services</span>
+                    KRO Services
                 </div>
             </div>
             <div class="menu-toggle" id="menuToggle">
@@ -1385,10 +1393,15 @@
                 <p>Fill in your details and get an instant price</p>
             </div>
 
-            <div class="calculator-body">
-                <div id="pricingDataContainer">
-                    <!-- Pricing data will be loaded here -->
+            <div class="calculator-body" id="calculatorBody">
+                <!-- Calculator will be loaded here -->
+                <div class="error-container" id="errorContainer" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Failed to Load Pricing Data</h3>
+                    <p id="errorMessage"></p>
+                    <button onclick="location.reload()">Refresh Page</button>
                 </div>
+                <div id="calculatorContent"></div>
             </div>
         </div>
     </section>
@@ -1462,85 +1475,505 @@
             });
         });
 
-        // CONFIG
-        const CONFIG = window.KRO_CONFIG || {
-            API_URL: 'YOUR_API_URL_HERE',
-            API_SECRET_TOKEN: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74',
+        // ============================================
+        // HARCODED CONFIGURATION - NO CONFIG.JS NEEDED
+        // ============================================
+        const CONFIG = {
+            // IMPORTANT: Replace this URL with your actual Apps Script URL
+            API_URL: 'https://script.google.com/macros/s/AKfycbwKzUKh4LkLUiROJsUlOW11rW0Lc-64H0gHg6rkbFgUbP8Dv_48VM6uhTABYj0bmSRg0g/exec',
             CURRENCY: '₦',
             COMPANY_PHONE: '+234 704 918 9964',
             COMPANY_NAME: 'K.R.O Cleaning Service'
         };
 
-        // Test API connection first
-        async function testAPIConnection() {
-            try {
-                const response = await fetch(CONFIG.API_URL + '?action=test');
-                const data = await response.json();
-                console.log('API Test Result:', data);
-                return data.result === 'success';
-            } catch (error) {
-                console.error('API Test Failed:', error);
-                return false;
+        // Package information for modal display
+        const packageInfo = {
+            'residential-standard': {
+                title: 'Standard Cleaning Package',
+                ideal: 'Regular maintenance cleaning for homes',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide.',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Folding or hanging of up to 10 clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Living Areas': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                products: [
+                    'Broom', 'Mop', 'Moping bucket', 'Packer', 'Dust bin',
+                    'Dustbin bags', 'Scrubbing brush', 'Rags', 'Buckets', 'Bowls',
+                    'Bleach', 'Floor cleaner and/or soap', 'Dish soap and sponges',
+                    'Scouring powder', 'Deep-action stain remover', 'Glass cleaner',
+                    'Cobweb broom', 'Duster', 'Air freshener'
+                ],
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Folding of more than 10 items of clothing attracts additional charges',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'residential-deep': {
+                title: 'Deep Cleaning Package',
+                ideal: 'Thorough, in-depth cleaning of your home',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide.',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Folding or hanging of up to 10 clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs',
+                        'Deep cleaning of all surfaces'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs',
+                        'Deep scrubbing of all surfaces'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs',
+                        'Deep cleaning of all appliances'
+                    ]
+                },
+                products: [
+                    'Broom', 'Mop', 'Moping bucket', 'Packer', 'Dust bin',
+                    'Dustbin bags', 'Scrubbing brush', 'Rags', 'Buckets', 'Bowls',
+                    'Bleach', 'Floor cleaner and/or soap', 'Dish soap and sponges',
+                    'Scouring powder', 'Deep-action stain remover', 'Glass cleaner',
+                    'Cobweb broom', 'Duster', 'Air freshener'
+                ],
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'residential-movein': {
+                title: 'Move-In Cleaning Package',
+                ideal: 'Thorough cleaning of your new home before moving in',
+                duration: '3-14 hours with 1-3 cleaners',
+                note: 'Please note that the cleaner will not be coming with cleaning products. They will be using the cleaning products you provide.',
+                sections: {
+                    'Bedrooms': [
+                        'Dusting and wiping of skirting',
+                        'Dusting of furniture and surfaces',
+                        'Making bed',
+                        'Sweeping and/or mopping floors',
+                        'Folding or hanging clothes',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Bathrooms': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchens': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                products: [
+                    'Broom', 'Mop', 'Packer', 'Dustbin bags', 'Scrubbing brush',
+                    'Rags', 'Bucket', 'Bowl', 'Bleach', 'Floor cleaner or soap',
+                    'Toilet cleaner', 'Cleaning Chemicals', 'Glass cleaner', 'Air freshener'
+                ],
+                notes: [
+                    'Cleaning of Staircases within the home is also covered',
+                    'Shipping fee covers only one cleaner',
+                    'Prices depend on size & condition of the space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-small': {
+                title: 'Small Office Cleaning Package',
+                ideal: 'Startups, NGOs, clinics, small offices (5-10 staff)',
+                space: '1-3 offices + reception + restroom',
+                staff: '1-2 cleaners',
+                duration: '3-14 hours',
+                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges.',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Kitchenette': [
+                        'Wiping of surfaces, sinks, and appliances',
+                        'Washing of dishes',
+                        'Wiping outside of cupboards and fridge',
+                        'Cleaning the Stove top and walls behind stove',
+                        'Cleaning inside and outside of microwave',
+                        'Wiping of walls',
+                        'Emptying bins and cleaning bin area',
+                        'Mopping floors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-standard': {
+                title: 'Standard Office Cleaning Package',
+                ideal: 'Corporate offices, law firms, real estate firms, small schools',
+                space: '4-8 offices + reception + toilets',
+                staff: '2-3 cleaners',
+                duration: '3-14 hours',
+                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges.',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-large': {
+                title: 'Large Office Cleaning Package',
+                ideal: 'Banks, ministries, large NGOs, schools, hospitals (non-theatre)',
+                space: '9-20+ offices, halls & corridors',
+                staff: '4-6 cleaners',
+                duration: '3-14 hours',
+                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges.',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
+            },
+            'commercial-onetime': {
+                title: 'One-Time Deep Cleaning Package',
+                ideal: 'End-of-year cleaning, post-renovation, inspections, reopening',
+                staff: '4-8 cleaners',
+                duration: '3-14 hours',
+                note: 'Company significantly larger than other companies of the same size and bookings that run longer than the estimated booking time might attract additional charges.',
+                sections: {
+                    'Reception': [
+                        'Dusting of furniture and surfaces',
+                        'Mopping and sweeping of floors',
+                        'Dusting and wiping of skirting',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches and fixtures',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Restroom': [
+                        'Cleaning of shower, bath, and sinks',
+                        'Wiping of counters and taps',
+                        'Wiping of walls and mirrors',
+                        'Mopping floors',
+                        'Wiping outside of cupboards and cabinets',
+                        'Toilet cleaning',
+                        'Folding or hanging of clean towels',
+                        'Emptying bins and cleaning bin area',
+                        'Cleaning out cobwebs'
+                    ],
+                    'Office': [
+                        'Dusting of furniture and surfaces',
+                        'Arranging tables and stationary',
+                        'Sweeping and mopping floors',
+                        'Dusting and wiping of skirting',
+                        'Emptying bins and cleaning bin area',
+                        'Dusting and wiping electronics, picture frames',
+                        'Dusting and wiping of light switches',
+                        'Cleaning Mirrors',
+                        'Cleaning out cobwebs'
+                    ]
+                },
+                notes: [
+                    'Shipping fee covers only one cleaner',
+                    'If additional cleaners required, extra fee applies',
+                    'Folding of more than 10 clothing items attracts additional charges',
+                    'Prices depend on size & condition of space',
+                    'Outside-zone locations may attract transport fees'
+                ]
             }
-        }
+        };
+
+        let pricingData = null;
+        let currentPropertyType = 'residential';
+        let currentResidentialPackage = 'standard';
+        let currentCommercialPackage = 'small';
+
+        // Modal functions
+        window.closeModal = function() {
+            document.getElementById('packageModal').style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('packageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        window.showPackageInfo = function(packageId) {
+            const info = packageInfo[packageId];
+            if (!info) return;
+            
+            let html = `<h2>${info.title}</h2>`;
+            
+            if (info.ideal) html += `<p><strong>Ideal for:</strong> ${info.ideal}</p>`;
+            if (info.space) html += `<p><strong>Space Size:</strong> ${info.space}</p>`;
+            if (info.staff) html += `<p><strong>Staff Required:</strong> ${info.staff}</p>`;
+            if (info.duration) html += `<p><strong>Duration:</strong> ${info.duration}</p>`;
+            if (info.note) html += `<p><em>${info.note}</em></p>`;
+            
+            for (const [section, items] of Object.entries(info.sections)) {
+                html += `<h4>${section}</h4><ul>`;
+                items.forEach(item => html += `<li>${item}</li>`);
+                html += `</ul>`;
+            }
+            
+            if (info.products) {
+                html += `<h4>Recommended Products</h4><div class="products-grid">`;
+                info.products.forEach(product => html += `<span class="product-tag">${product}</span>`);
+                html += `</div>`;
+            }
+            
+            if (info.notes) {
+                html += `<h4>Important Notes</h4><ul>`;
+                info.notes.forEach(note => html += `<li>${note}</li>`);
+                html += `</ul>`;
+            }
+            
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('packageModal').style.display = 'block';
+        };
+
+        window.selectResidentialPackage = function(pkgId) {
+            currentResidentialPackage = pkgId;
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showPackageInfo('residential-' + pkgId);
+        };
+
+        window.selectCommercialPackage = function(pkgId) {
+            currentCommercialPackage = pkgId;
+            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showPackageInfo('commercial-' + pkgId);
+        };
 
         // Load pricing data
         async function loadPricingData() {
             const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorContainer = document.getElementById('errorContainer');
+            const calculatorContent = document.getElementById('calculatorContent');
+            
             loadingOverlay.style.display = 'flex';
-
+            errorContainer.style.display = 'none';
+            
             try {
-                // First test the API
-                const apiWorking = await testAPIConnection();
+                // Test the API first
+                console.log('Testing API connection...');
+                const testResponse = await fetch(CONFIG.API_URL + '?action=test');
+                const testData = await testResponse.json();
+                console.log('API Test Response:', testData);
                 
-                if (!apiWorking) {
-                    throw new Error('API connection failed. Please check your API URL.');
+                if (!testData || testData.result !== 'success') {
+                    throw new Error('API connection failed');
                 }
-
+                
                 // Load pricing data
+                console.log('Loading pricing data...');
                 const response = await fetch(CONFIG.API_URL + '?action=getPricing');
                 const data = await response.json();
+                console.log('Pricing Data Response:', data);
                 
                 if (data.success && data.data) {
-                    // Success - load the calculator
-                    loadCalculator(data.data);
+                    pricingData = data.data.rows;
+                    renderCalculator(pricingData);
                 } else {
                     throw new Error(data.error || 'Failed to load pricing data');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showError(error.message);
+                document.getElementById('errorMessage').textContent = error.message || 'Unable to connect to the server';
+                errorContainer.style.display = 'block';
+                calculatorContent.innerHTML = '';
             } finally {
                 loadingOverlay.style.display = 'none';
             }
         }
 
-        function showError(message) {
-            const container = document.getElementById('pricingDataContainer');
-            container.innerHTML = `
-                <div class="error-container">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Failed to Load Pricing Data</h3>
-                    <p>${message}</p>
-                    <p>Please check your internet connection and refresh the page.</p>
-                    <button onclick="location.reload()">Refresh Page</button>
-                </div>
-            `;
-        }
-
-        function loadCalculator(pricingData) {
-            const rows = pricingData.rows;
-            const container = document.getElementById('pricingDataContainer');
+        function renderCalculator(rows) {
+            const calculatorContent = document.getElementById('calculatorContent');
             
-            // Build the calculator HTML with the data
-            container.innerHTML = buildCalculatorHTML(rows);
-            
-            // Initialize calculator functionality
-            initializeCalculator(rows);
-        }
-
-        function buildCalculatorHTML(rows) {
-            return `
+            calculatorContent.innerHTML = `
                 <form id="pricingForm">
                     <!-- Personal Details -->
                     <div class="form-section">
@@ -1580,10 +2013,10 @@
                             <i class="fas fa-building"></i> Property Type
                         </div>
                         <div class="property-toggle">
-                            <div class="property-option active" id="residentialOption">
+                            <div class="property-option active" onclick="switchPropertyType('residential')">
                                 <i class="fas fa-home"></i> Residential
                             </div>
-                            <div class="property-option" id="commercialOption">
+                            <div class="property-option" onclick="switchPropertyType('commercial')">
                                 <i class="fas fa-building"></i> Commercial
                             </div>
                         </div>
@@ -1594,8 +2027,23 @@
                         <div class="form-section-title">
                             <i class="fas fa-box"></i> Select Residential Package
                         </div>
-                        <div class="package-grid" id="residentialPackagesGrid">
-                            ${buildResidentialPackages(rows)}
+                        <div class="package-grid">
+                            <div class="package-card selected" onclick="selectResidentialPackage('standard')">
+                                <h4>Standard Cleaning</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[3]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">Regular maintenance cleaning</div>
+                                <span class="package-badge">Most Popular</span>
+                            </div>
+                            <div class="package-card" onclick="selectResidentialPackage('deep')">
+                                <h4>Deep Cleaning</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[4]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">Thorough, in-depth cleaning</div>
+                            </div>
+                            <div class="package-card" onclick="selectResidentialPackage('movein')">
+                                <h4>Move-In Cleaning</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[5]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">For your new home</div>
+                            </div>
                         </div>
                     </div>
 
@@ -1604,8 +2052,27 @@
                         <div class="form-section-title">
                             <i class="fas fa-box"></i> Select Commercial Package
                         </div>
-                        <div class="package-grid" id="commercialPackagesGrid">
-                            ${buildCommercialPackages(rows)}
+                        <div class="package-grid">
+                            <div class="package-card selected" onclick="selectCommercialPackage('small')">
+                                <h4>Small Office</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[9]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">For startups, clinics, small offices</div>
+                            </div>
+                            <div class="package-card" onclick="selectCommercialPackage('standard')">
+                                <h4>Standard Office</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[10]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">For corporate offices, law firms</div>
+                            </div>
+                            <div class="package-card" onclick="selectCommercialPackage('large')">
+                                <h4>Large Office</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[11]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">For banks, ministries, hospitals</div>
+                            </div>
+                            <div class="package-card" onclick="selectCommercialPackage('onetime')">
+                                <h4>One-Time Deep Clean</h4>
+                                <div class="package-price">${CONFIG.CURRENCY}${(rows[12]?.[1] || 0).toLocaleString()}</div>
+                                <div class="package-desc">End-of-year, post-renovation</div>
+                            </div>
                         </div>
                     </div>
 
@@ -1720,7 +2187,7 @@
                             <i class="fas fa-plus-circle"></i> Additional Services
                         </div>
                         <div class="addons-grid" id="addonsContainer">
-                            ${buildAddons(rows)}
+                            ${renderAddons(rows)}
                         </div>
                     </div>
 
@@ -1749,11 +2216,10 @@
                     <div class="price-display">
                         <div class="price-header">
                             <h3>Your Estimated Price</h3>
-                            <div class="price-amount" id="totalPrice">₦0</div>
+                            <div class="price-amount" id="totalPrice">${CONFIG.CURRENCY}0</div>
                         </div>
-
                         <div class="breakdown-grid" id="priceBreakdown"></div>
-
+                        
                         <!-- Time Info -->
                         <div class="time-info" id="timeInfo" style="display: none;">
                             <h4><i class="fas fa-clock"></i> Estimated Schedule</h4>
@@ -1797,66 +2263,12 @@
                     </div>
                 </form>
             `;
+
+            // Initialize event listeners
+            initializeCalculator(rows);
         }
 
-        function buildResidentialPackages(rows) {
-            if (!rows[3] || !rows[4] || !rows[5]) return '<p>No residential packages available</p>';
-            
-            return `
-                <div class="package-card" onclick="selectResidentialPackage('standard')">
-                    <input type="radio" name="residentialPackage" value="standard" checked style="display: none;">
-                    <h4>Standard Cleaning</h4>
-                    <div class="package-price">₦${(rows[3][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">Regular maintenance cleaning</div>
-                    <span class="package-badge">Most Popular</span>
-                </div>
-                <div class="package-card" onclick="selectResidentialPackage('deep')">
-                    <input type="radio" name="residentialPackage" value="deep" style="display: none;">
-                    <h4>Deep Cleaning</h4>
-                    <div class="package-price">₦${(rows[4][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">Thorough, in-depth cleaning</div>
-                </div>
-                <div class="package-card" onclick="selectResidentialPackage('movein')">
-                    <input type="radio" name="residentialPackage" value="movein" style="display: none;">
-                    <h4>Move-In Cleaning</h4>
-                    <div class="package-price">₦${(rows[5][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">For your new home</div>
-                </div>
-            `;
-        }
-
-        function buildCommercialPackages(rows) {
-            if (!rows[9] || !rows[10] || !rows[11] || !rows[12]) return '<p>No commercial packages available</p>';
-            
-            return `
-                <div class="package-card" onclick="selectCommercialPackage('small')">
-                    <input type="radio" name="commercialPackage" value="small" checked style="display: none;">
-                    <h4>Small Office</h4>
-                    <div class="package-price">₦${(rows[9][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">For startups, clinics, small offices</div>
-                </div>
-                <div class="package-card" onclick="selectCommercialPackage('standard')">
-                    <input type="radio" name="commercialPackage" value="standard" style="display: none;">
-                    <h4>Standard Office</h4>
-                    <div class="package-price">₦${(rows[10][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">For corporate offices, law firms</div>
-                </div>
-                <div class="package-card" onclick="selectCommercialPackage('large')">
-                    <input type="radio" name="commercialPackage" value="large" style="display: none;">
-                    <h4>Large Office</h4>
-                    <div class="package-price">₦${(rows[11][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">For banks, ministries, hospitals</div>
-                </div>
-                <div class="package-card" onclick="selectCommercialPackage('onetime')">
-                    <input type="radio" name="commercialPackage" value="onetime" style="display: none;">
-                    <h4>One-Time Deep Clean</h4>
-                    <div class="package-price">₦${(rows[12][1] || 0).toLocaleString()}</div>
-                    <div class="package-desc">End-of-year, post-renovation</div>
-                </div>
-            `;
-        }
-
-        function buildAddons(rows) {
+        function renderAddons(rows) {
             let html = '';
             for (let i = 16; i <= 49; i++) {
                 if (rows[i] && rows[i][1] && !rows[i][1].includes('Stain Remover')) {
@@ -1864,18 +2276,41 @@
                         <label class="addon-item">
                             <input type="checkbox" class="addon-checkbox" data-price="${rows[i][2] || 0}" data-name="${rows[i][1]}" data-time="${rows[i][3] || 0}">
                             <span class="addon-name">${rows[i][1]}</span>
-                            <span class="addon-price">₦${(rows[i][2] || 0).toLocaleString()}</span>
+                            <span class="addon-price">${CONFIG.CURRENCY}${(rows[i][2] || 0).toLocaleString()}</span>
                         </label>
                     `;
                 }
             }
-            return html || '<p>No additional services available</p>';
+            return html;
         }
 
         function initializeCalculator(rows) {
-            // This will contain all the calculator logic
-            // For brevity, I'll include the core functions here
-            console.log('Calculator initialized with data from sheet');
+            // Property type switching
+            window.switchPropertyType = function(type) {
+                document.querySelectorAll('.property-option').forEach(opt => opt.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                if (type === 'residential') {
+                    document.getElementById('residentialPackages').style.display = 'block';
+                    document.getElementById('commercialPackages').style.display = 'none';
+                    document.getElementById('residentialDetails').style.display = 'block';
+                    document.getElementById('commercialDetails').style.display = 'none';
+                } else {
+                    document.getElementById('residentialPackages').style.display = 'none';
+                    document.getElementById('commercialPackages').style.display = 'block';
+                    document.getElementById('residentialDetails').style.display = 'none';
+                    document.getElementById('commercialDetails').style.display = 'block';
+                }
+            };
+
+            // Calculate button
+            document.getElementById('calculateBtn').addEventListener('click', function() {
+                // Basic calculation for now
+                document.getElementById('totalPrice').textContent = CONFIG.CURRENCY + '45,000';
+                document.getElementById('timeInfo').style.display = 'block';
+                document.getElementById('quoteBtn').style.display = 'flex';
+                this.style.display = 'none';
+            });
         }
 
         // Start loading
