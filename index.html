@@ -385,6 +385,12 @@
             margin-bottom: 1rem;
             border-left: 4px solid #ffd700;
             animation: slideIn 0.5s ease-out;
+            transition: all 0.3s;
+        }
+
+        .feed-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
         }
 
         @keyframes slideIn {
@@ -449,6 +455,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             color: #ffd700;
+            transition: all 0.3s;
         }
 
         .feed-stat .label {
@@ -958,6 +965,7 @@
             display: none;
             align-items: center;
             gap: 0.5rem;
+            animation: slideIn 0.3s ease-out;
         }
 
         /* Modal */
@@ -1330,49 +1338,20 @@
                 <div class="live-feed-header">
                     <div class="live-dot"></div>
                     <h3>Live Activity</h3>
-                    <span>24/7 Updates</span>
+                    <span id="liveCounter">0</span>
                 </div>
 
                 <div class="feed-items" id="liveFeed">
-                    <div class="feed-item">
-                        <div class="feed-item-header">
-                            <span class="customer-name"><i class="fas fa-user-circle"></i> John D.</span>
-                            <span class="feed-time"><i class="far fa-clock"></i> 2 min ago</span>
-                        </div>
-                        <div class="feed-item-details">
-                            <span><i class="fas fa-broom"></i> Standard Cleaning</span>
-                            <span><i class="fas fa-tag"></i> ₦45,000</span>
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="feed-item-header">
-                            <span class="customer-name"><i class="fas fa-user-circle"></i> Sarah M.</span>
-                            <span class="feed-time"><i class="far fa-clock"></i> 5 min ago</span>
-                        </div>
-                        <div class="feed-item-details">
-                            <span><i class="fas fa-broom"></i> Deep Cleaning</span>
-                            <span><i class="fas fa-tag"></i> ₦82,000</span>
-                        </div>
-                    </div>
-                    <div class="feed-item">
-                        <div class="feed-item-header">
-                            <span class="customer-name"><i class="fas fa-user-circle"></i> Michael O.</span>
-                            <span class="feed-time"><i class="far fa-clock"></i> 12 min ago</span>
-                        </div>
-                        <div class="feed-item-details">
-                            <span><i class="fas fa-broom"></i> Office Cleaning</span>
-                            <span><i class="fas fa-tag"></i> ₦96,000</span>
-                        </div>
-                    </div>
+                    <!-- Live feed items will be populated by JavaScript -->
                 </div>
 
                 <div class="feed-stats">
                     <div class="feed-stat">
-                        <div class="value" id="todayQuotes">23</div>
+                        <div class="value" id="todayQuotes">0</div>
                         <div class="label">Today's Quotes</div>
                     </div>
                     <div class="feed-stat">
-                        <div class="value" id="activeNow">12</div>
+                        <div class="value" id="activeNow">0</div>
                         <div class="label">Active Now</div>
                     </div>
                 </div>
@@ -1480,12 +1459,17 @@
         // ============================================
         const CONFIG = {
             // IMPORTANT: Replace this URL with your actual Apps Script URL
-            API_URL: 'https://script.google.com/macros/s/AKfycbwmKX-C3EjIpGQUqNelwsnyH88nVj5628vkq-ADFJdjAYfSLFebxbS0kqo_AZWrKa5eyg/exec',
+            API_URL: 'https://script.google.com/macros/s/AKfycbwKzUKh4LkLUiROJsUlOW11rW0Lc-64H0gHg6rkbFgUbP8Dv_48VM6uhTABYj0bmSRg0g/exec',
             CURRENCY: '₦',
             COMPANY_PHONE: '+234 704 918 9964',
             COMPANY_NAME: 'K.R.O Cleaning Service'
         };
 
+        // Sample names for live feed
+        const firstNames = ['John', 'Sarah', 'Michael', 'Blessing', 'Chidi', 'Amaka', 'Tunde', 'Ngozi', 'Emeka', 'Funke', 'Adebayo', 'Chioma', 'Oluchi', 'Kayode', 'Zainab'];
+        const lastInitials = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        const serviceTypes = ['Standard Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Move-In Cleaning', 'Commercial Cleaning'];
+        
         // Package information for modal display
         const packageInfo = {
             'residential-standard': {
@@ -1867,6 +1851,8 @@
         let currentPropertyType = 'residential';
         let currentResidentialPackage = 'standard';
         let currentCommercialPackage = 'small';
+        let currentTotal = 0;
+        let currentFormData = null;
 
         // Modal functions
         window.closeModal = function() {
@@ -1928,6 +1914,496 @@
             showPackageInfo('commercial-' + pkgId);
         };
 
+        // ========== LIVE FEED FUNCTIONS ==========
+        function updateLiveFeed() {
+            const feedContainer = document.getElementById('liveFeed');
+            const todayQuotes = document.getElementById('todayQuotes');
+            const activeNow = document.getElementById('activeNow');
+            const liveCounter = document.getElementById('liveCounter');
+            
+            // Update random stats
+            const todayCount = Math.floor(Math.random() * 30) + 15;
+            const activeCount = Math.floor(Math.random() * 15) + 5;
+            
+            todayQuotes.textContent = todayCount;
+            activeNow.textContent = activeCount;
+            
+            // Create random feed items
+            const numItems = Math.floor(Math.random() * 3) + 4; // 4-6 items
+            let feedHtml = '';
+            
+            for (let i = 0; i < numItems; i++) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastNameInitial = lastInitials[Math.floor(Math.random() * lastInitials.length)];
+                const service = serviceTypes[Math.floor(Math.random() * serviceTypes.length)];
+                const amount = Math.floor(Math.random() * 150000) + 30000;
+                const minutesAgo = Math.floor(Math.random() * 30) + 1;
+                
+                feedHtml += `
+                    <div class="feed-item">
+                        <div class="feed-item-header">
+                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${firstName} ${lastNameInitial}.</span>
+                            <span class="feed-time"><i class="far fa-clock"></i> ${minutesAgo} min ago</span>
+                        </div>
+                        <div class="feed-item-details">
+                            <span><i class="fas fa-broom"></i> ${service}</span>
+                            <span><i class="fas fa-tag"></i> ${CONFIG.CURRENCY}${amount.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            feedContainer.innerHTML = feedHtml;
+            liveCounter.textContent = numItems;
+        }
+
+        // Update live feed every 10 seconds
+        setInterval(updateLiveFeed, 10000);
+
+        // ========== CALCULATOR FUNCTIONS ==========
+        const frequencyDiscounts = {
+            onetime: 0,
+            twicemonth: 3,
+            onceweek: 5,
+            twiceweek: 7,
+            threeweek: 8,
+            fiveweek: 10,
+            everyday: 16
+        };
+
+        const additionalCleanerCost = {
+            residential: 5000,
+            commercial: { small: 10000, standard: 22500, large: 35000, onetime: 40000 }
+        };
+
+        let workingHours = { hoursPerDay: 8 };
+
+        function calculateTotalTime(rows) {
+            let totalMinutes = 0;
+            
+            if (currentPropertyType === 'residential') {
+                const pkg = rows[currentResidentialPackage === 'standard' ? 3 : currentResidentialPackage === 'deep' ? 4 : 5];
+                totalMinutes += (pkg[2] || 3) * 60; // Base time in minutes
+                
+                const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 1;
+                const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 1;
+                const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 1;
+                const kitchens = parseInt(document.getElementById('kitchens')?.value) || 1;
+                const guestToilet = parseInt(document.getElementById('guestToilet')?.value) || 0;
+                const laundry = parseInt(document.getElementById('laundry')?.value) || 0;
+                const study = parseInt(document.getElementById('study')?.value) || 0;
+                const store = parseInt(document.getElementById('store')?.value) || 0;
+                
+                totalMinutes += bedrooms * (pkg[4] || 30);  // Bedroom time
+                totalMinutes += bathrooms * (pkg[6] || 25); // Bathroom time
+                totalMinutes += livingrooms * (pkg[8] || 30); // Living time
+                totalMinutes += kitchens * (pkg[10] || 40); // Kitchen time
+                totalMinutes += guestToilet * (pkg[12] || 20); // Guest toilet time
+                totalMinutes += laundry * (pkg[14] || 25); // Laundry time
+                totalMinutes += study * (pkg[16] || 25); // Study time
+                totalMinutes += store * (pkg[18] || 20); // Store time
+                
+            } else {
+                const pkg = rows[currentCommercialPackage === 'small' ? 9 : 
+                                  currentCommercialPackage === 'standard' ? 10 : 
+                                  currentCommercialPackage === 'large' ? 11 : 12];
+                totalMinutes += (pkg[2] || 4) * 60; // Base time in minutes
+                
+                const offices = parseInt(document.getElementById('offices')?.value) || 1;
+                const restrooms = parseInt(document.getElementById('restrooms')?.value) || 1;
+                const reception = parseInt(document.getElementById('reception')?.value) || 0;
+                const kitchenette = parseInt(document.getElementById('commercialKitchen')?.value) || 0;
+                const canteen = parseInt(document.getElementById('canteen')?.value) || 0;
+                const lounge = parseInt(document.getElementById('lounge')?.value) || 0;
+                const studyLibrary = parseInt(document.getElementById('studyLibrary')?.value) || 0;
+                const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
+                const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
+                
+                totalMinutes += offices * (pkg[4] || 40); // Office time
+                totalMinutes += restrooms * (pkg[6] || 35); // Restroom time
+                totalMinutes += reception * (pkg[8] || 30); // Reception time
+                totalMinutes += kitchenette * (pkg[10] || 25); // Kitchenette time
+                totalMinutes += canteen * (pkg[12] || 60); // Canteen time
+                totalMinutes += lounge * (pkg[14] || 30); // Lounge time
+                totalMinutes += studyLibrary * (pkg[16] || 30); // Study/Library time
+                totalMinutes += laundryRoom * (pkg[18] || 35); // Laundry room time
+                totalMinutes += storeRoom * (pkg[20] || 25); // Store time
+            }
+            
+            // Add add-ons time
+            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => {
+                totalMinutes += parseInt(cb.dataset.time) || 0;
+            });
+            
+            return totalMinutes;
+        }
+
+        function calculateRequiredCleaners(totalMinutes) {
+            const hours = totalMinutes / 60;
+            if (hours <= 3) return 1;
+            if (hours <= 6) return 2;
+            if (hours <= 9) return 3;
+            if (hours <= 12) return 4;
+            if (hours <= 15) return 5;
+            return Math.ceil(hours / 3);
+        }
+
+        function calculateDaysRequired(totalMinutes) {
+            const hoursPerDay = workingHours.hoursPerDay || 8;
+            const totalHours = totalMinutes / 60;
+            return Math.ceil(totalHours / hoursPerDay);
+        }
+
+        function calculateStainRemoverCost(rows, stainType) {
+            if (stainType === 'none') return 0;
+            
+            // Find stain remover price from add-ons
+            let basePrice = 0;
+            for (let i = 16; i <= 49; i++) {
+                if (rows[i] && rows[i][1]) {
+                    const serviceName = rows[i][1].toLowerCase();
+                    if (currentPropertyType === 'residential' && serviceName.includes('stain remover') && serviceName.includes(stainType)) {
+                        basePrice = rows[i][2] || 0;
+                        break;
+                    } else if (currentPropertyType === 'commercial' && serviceName.includes('stain remover') && serviceName.includes(currentCommercialPackage)) {
+                        basePrice = rows[i][2] || 0;
+                        break;
+                    }
+                }
+            }
+            
+            if (basePrice === 0) return 0;
+            
+            const totalHours = calculateTotalTime(rows) / 60;
+            const requiredCleaners = calculateRequiredCleaners(calculateTotalTime(rows));
+            
+            const hourFactor = 1 + (Math.max(0, totalHours - 3) * 0.1);
+            const cleanerFactor = requiredCleaners;
+            
+            return Math.round(basePrice * hourFactor * cleanerFactor);
+        }
+
+        function calculatePrice(rows) {
+            let basePrice = 0, roomCosts = 0, breakdown = [];
+            
+            if (currentPropertyType === 'residential') {
+                const pkg = rows[currentResidentialPackage === 'standard' ? 3 : currentResidentialPackage === 'deep' ? 4 : 5];
+                basePrice = pkg[1] || 0;
+                
+                const bedrooms = parseInt(document.getElementById('bedrooms')?.value) || 1;
+                const bathrooms = parseInt(document.getElementById('bathrooms')?.value) || 1;
+                const livingrooms = parseInt(document.getElementById('livingrooms')?.value) || 1;
+                const kitchens = parseInt(document.getElementById('kitchens')?.value) || 1;
+                const guestToilet = parseInt(document.getElementById('guestToilet')?.value) || 0;
+                const laundry = parseInt(document.getElementById('laundry')?.value) || 0;
+                const study = parseInt(document.getElementById('study')?.value) || 0;
+                const store = parseInt(document.getElementById('store')?.value) || 0;
+                
+                roomCosts = (bedrooms * (pkg[3] || 0)) + 
+                           (bathrooms * (pkg[5] || 0)) +
+                           (livingrooms * (pkg[7] || 0)) + 
+                           (kitchens * (pkg[9] || 0)) +
+                           (guestToilet * (pkg[11] || 0)) +
+                           (laundry * (pkg[13] || 0)) +
+                           (study * (pkg[15] || 0)) +
+                           (store * (pkg[17] || 0));
+                
+                if (bedrooms > 0 && pkg[3]) breakdown.push({ item: `Bedrooms (${bedrooms})`, cost: bedrooms * pkg[3] });
+                if (bathrooms > 0 && pkg[5]) breakdown.push({ item: `Bathrooms (${bathrooms})`, cost: bathrooms * pkg[5] });
+                if (livingrooms > 0 && pkg[7]) breakdown.push({ item: `Living Rooms (${livingrooms})`, cost: livingrooms * pkg[7] });
+                if (kitchens > 0 && pkg[9]) breakdown.push({ item: `Kitchens (${kitchens})`, cost: kitchens * pkg[9] });
+                if (guestToilet > 0 && pkg[11]) breakdown.push({ item: `Guest Toilet (${guestToilet})`, cost: guestToilet * pkg[11] });
+                if (laundry > 0 && pkg[13]) breakdown.push({ item: `Laundry (${laundry})`, cost: laundry * pkg[13] });
+                if (study > 0 && pkg[15]) breakdown.push({ item: `Study (${study})`, cost: study * pkg[15] });
+                if (store > 0 && pkg[17]) breakdown.push({ item: `Store (${store})`, cost: store * pkg[17] });
+                
+            } else {
+                const pkg = rows[currentCommercialPackage === 'small' ? 9 : 
+                                  currentCommercialPackage === 'standard' ? 10 : 
+                                  currentCommercialPackage === 'large' ? 11 : 12];
+                basePrice = pkg[1] || 0;
+                
+                const offices = parseInt(document.getElementById('offices')?.value) || 1;
+                const restrooms = parseInt(document.getElementById('restrooms')?.value) || 1;
+                const reception = parseInt(document.getElementById('reception')?.value) || 0;
+                const kitchenette = parseInt(document.getElementById('commercialKitchen')?.value) || 0;
+                const canteen = parseInt(document.getElementById('canteen')?.value) || 0;
+                const lounge = parseInt(document.getElementById('lounge')?.value) || 0;
+                const studyLibrary = parseInt(document.getElementById('studyLibrary')?.value) || 0;
+                const laundryRoom = parseInt(document.getElementById('laundryRoom')?.value) || 0;
+                const storeRoom = parseInt(document.getElementById('storeRoom')?.value) || 0;
+                
+                roomCosts = (offices * (pkg[3] || 0)) + 
+                           (restrooms * (pkg[5] || 0)) + 
+                           (reception * (pkg[7] || 0)) +
+                           (kitchenette * (pkg[9] || 0)) +
+                           (canteen * (pkg[11] || 0)) +
+                           (lounge * (pkg[13] || 0)) +
+                           (studyLibrary * (pkg[15] || 0)) +
+                           (laundryRoom * (pkg[17] || 0)) +
+                           (storeRoom * (pkg[19] || 0));
+                
+                if (offices > 0 && pkg[3]) breakdown.push({ item: `Offices (${offices})`, cost: offices * pkg[3] });
+                if (restrooms > 0 && pkg[5]) breakdown.push({ item: `Restrooms (${restrooms})`, cost: restrooms * pkg[5] });
+                if (reception > 0 && pkg[7]) breakdown.push({ item: 'Reception', cost: pkg[7] });
+                if (kitchenette > 0 && pkg[9]) breakdown.push({ item: `Kitchenette (${kitchenette})`, cost: kitchenette * pkg[9] });
+                if (canteen > 0 && pkg[11]) breakdown.push({ item: `Canteen (${canteen})`, cost: canteen * pkg[11] });
+                if (lounge > 0 && pkg[13]) breakdown.push({ item: `Lounge (${lounge})`, cost: lounge * pkg[13] });
+                if (studyLibrary > 0 && pkg[15]) breakdown.push({ item: `Study/Library (${studyLibrary})`, cost: studyLibrary * pkg[15] });
+                if (laundryRoom > 0 && pkg[17]) breakdown.push({ item: `Laundry Room (${laundryRoom})`, cost: laundryRoom * pkg[17] });
+                if (storeRoom > 0 && pkg[19]) breakdown.push({ item: `Store Room (${storeRoom})`, cost: storeRoom * pkg[19] });
+            }
+            
+            const totalMinutes = calculateTotalTime(rows);
+            const totalHours = totalMinutes / 60;
+            const daysRequired = calculateDaysRequired(totalMinutes);
+            const requiredCleaners = calculateRequiredCleaners(totalMinutes);
+            
+            // Calculate extra hours
+            let extraHoursCost = 0;
+            const baseTime = currentPropertyType === 'residential' ? 
+                (rows[currentResidentialPackage === 'standard' ? 3 : currentResidentialPackage === 'deep' ? 4 : 5][2] || 3) :
+                (rows[currentCommercialPackage === 'small' ? 9 : currentCommercialPackage === 'standard' ? 10 : currentCommercialPackage === 'large' ? 11 : 12][2] || 4);
+            
+            if (totalHours > baseTime) {
+                const extraHours = totalHours - baseTime;
+                const extraHourRate = currentPropertyType === 'residential' ? 
+                    (rows[currentResidentialPackage === 'standard' ? 3 : currentResidentialPackage === 'deep' ? 4 : 5][21] || 0) :
+                    (rows[currentCommercialPackage === 'small' ? 9 : currentCommercialPackage === 'standard' ? 10 : currentCommercialPackage === 'large' ? 11 : 12][21] || 0);
+                extraHoursCost = extraHours * extraHourRate;
+                if (extraHoursCost > 0) breakdown.push({ item: `Extra Hours (${extraHours.toFixed(1)} hrs)`, cost: extraHoursCost });
+            }
+            
+            // Add additional cleaners
+            let additionalCleanersAuto = requiredCleaners - 1;
+            if (additionalCleanersAuto > 0) {
+                const cleanerCost = currentPropertyType === 'residential' ? 
+                    additionalCleanersAuto * 5000 :
+                    additionalCleanersAuto * additionalCleanerCost.commercial[currentCommercialPackage];
+                breakdown.push({ item: `Required Additional Cleaners (${additionalCleanersAuto})`, cost: cleanerCost });
+            }
+            
+            // Add manual additional cleaners
+            const manualAdditionalCleaners = parseInt(document.getElementById('additionalCleaners')?.value) || 0;
+            let manualCleanerCost = 0;
+            if (manualAdditionalCleaners > 0) {
+                if (currentPropertyType === 'residential') {
+                    manualCleanerCost = manualAdditionalCleaners * 5000;
+                } else {
+                    manualCleanerCost = manualAdditionalCleaners * additionalCleanerCost.commercial[currentCommercialPackage];
+                }
+                breakdown.push({ item: `Manual Additional Cleaners (${manualAdditionalCleaners})`, cost: manualCleanerCost });
+            }
+            
+            // Add add-ons
+            let addonsTotal = 0;
+            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => {
+                addonsTotal += parseFloat(cb.dataset.price);
+                breakdown.push({ item: cb.dataset.name, cost: parseFloat(cb.dataset.price) });
+            });
+            
+            // Add stain remover
+            const stainRemoverCost = calculateStainRemoverCost(rows, document.getElementById('stainRemover').value);
+            if (stainRemoverCost > 0) {
+                breakdown.push({ item: 'Stain Remover', cost: stainRemoverCost });
+            }
+            
+            // Calculate subtotal
+            let subtotal = basePrice + roomCosts + extraHoursCost + 
+                          (additionalCleanersAuto > 0 ? additionalCleanersAuto * 
+                           (currentPropertyType === 'residential' ? 5000 : additionalCleanerCost.commercial[currentCommercialPackage]) : 0) +
+                          manualCleanerCost + addonsTotal + stainRemoverCost;
+            
+            if (basePrice > 0) breakdown.push({ item: 'Package Base', cost: basePrice });
+            
+            // Apply frequency discount
+            const discountPercent = frequencyDiscounts[document.getElementById('frequency').value];
+            const discountAmount = (subtotal * discountPercent) / 100;
+            const total = subtotal - discountAmount;
+            
+            if (discountPercent > 0) breakdown.push({ item: `Discount (${discountPercent}%)`, cost: -discountAmount });
+            
+            // Add time and schedule info
+            breakdown.push({ item: 'Total Time', cost: `${Math.round(totalMinutes)} mins (${totalHours.toFixed(1)} hrs)` });
+            breakdown.push({ item: 'Working Days', cost: daysRequired.toString() });
+            breakdown.push({ item: 'Required Cleaners', cost: requiredCleaners.toString() });
+            
+            // Update display
+            document.getElementById('totalPrice').textContent = `${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}`;
+            
+            let breakdownHtml = '<h3>Price Breakdown</h3>';
+            breakdown.forEach(item => {
+                if (typeof item.cost === 'number') {
+                    breakdownHtml += `<div class="breakdown-item"><span class="label">${item.item}</span><span class="value">${CONFIG.CURRENCY}${Math.abs(item.cost).toLocaleString()}${item.cost < 0 ? ' discount' : ''}</span></div>`;
+                } else {
+                    breakdownHtml += `<div class="breakdown-item"><span class="label">${item.item}</span><span class="value">${item.cost}</span></div>`;
+                }
+            });
+            breakdownHtml += `<div class="breakdown-item total"><span class="label">Total</span><span class="value">${CONFIG.CURRENCY}${Math.round(total).toLocaleString()}</span></div>`;
+            document.getElementById('priceBreakdown').innerHTML = breakdownHtml;
+            
+            // Update time info
+            document.getElementById('totalMinutes').textContent = Math.round(totalMinutes);
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+            document.getElementById('daysRequired').textContent = daysRequired;
+            document.getElementById('requiredCleaners').textContent = requiredCleaners;
+            
+            if (daysRequired > 1) {
+                document.getElementById('multiDayBadge').style.display = 'inline-block';
+            } else {
+                document.getElementById('multiDayBadge').style.display = 'none';
+            }
+            
+            document.getElementById('timeInfo').style.display = 'block';
+            
+            currentTotal = total;
+            
+            // Show quote button
+            document.getElementById('quoteBtn').style.display = 'flex';
+            document.getElementById('calculateBtn').style.display = 'none';
+            
+            return total;
+        }
+
+        // Submit quote function
+        function submitQuote(rows) {
+            if (!validateForm()) return;
+            
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            const selectedAddons = [];
+            document.querySelectorAll('.addon-checkbox:checked').forEach(cb => selectedAddons.push(cb.dataset.name));
+            
+            if (document.getElementById('stainRemover').value !== 'none') {
+                selectedAddons.push(document.getElementById('stainRemover').options[document.getElementById('stainRemover').selectedIndex].text);
+            }
+            
+            // Get room details string
+            let roomsString = '';
+            if (currentPropertyType === 'residential') {
+                roomsString = `Bed:${document.getElementById('bedrooms').value}, Bath:${document.getElementById('bathrooms').value}, ` +
+                             `Living:${document.getElementById('livingrooms').value}, Kitchen:${document.getElementById('kitchens').value}, ` +
+                             `Guest Toilet:${document.getElementById('guestToilet').value}, Laundry:${document.getElementById('laundry').value}, ` +
+                             `Study:${document.getElementById('study').value}, Store:${document.getElementById('store').value}`;
+            } else {
+                roomsString = `Offices:${document.getElementById('offices').value}, Restrooms:${document.getElementById('restrooms').value}, ` +
+                             `Reception:${document.getElementById('reception').value === '1' ? 'Yes' : 'No'}, ` +
+                             `Kitchenette:${document.getElementById('commercialKitchen').value}, Canteen:${document.getElementById('canteen').value}, ` +
+                             `Lounge:${document.getElementById('lounge').value}, Study/Library:${document.getElementById('studyLibrary').value}, ` +
+                             `Laundry Room:${document.getElementById('laundryRoom').value}, Store Room:${document.getElementById('storeRoom').value}`;
+            }
+            
+            const totalMinutes = calculateTotalTime(rows);
+            const totalHours = totalMinutes / 60;
+            const daysRequired = calculateDaysRequired(totalMinutes);
+            const requiredCleaners = calculateRequiredCleaners(totalMinutes);
+            
+            // Get package name
+            let packageName = '';
+            if (currentPropertyType === 'residential') {
+                packageName = currentResidentialPackage === 'standard' ? 'Standard Cleaning' : 
+                             currentResidentialPackage === 'deep' ? 'Deep Cleaning' : 'Move-In Cleaning';
+            } else {
+                packageName = currentCommercialPackage === 'small' ? 'Small Office' :
+                             currentCommercialPackage === 'standard' ? 'Standard Office' :
+                             currentCommercialPackage === 'large' ? 'Large Office' : 'One-Time Deep Clean';
+            }
+            
+            const formData = new URLSearchParams({
+                action: 'submitQuote',
+                secretToken: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74', // Your API secret token
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                propertyType: currentPropertyType === 'residential' ? 'Residential' : 'Commercial',
+                package: packageName,
+                frequency: document.getElementById('frequency').options[document.getElementById('frequency').selectedIndex].text,
+                rooms: roomsString,
+                addons: selectedAddons.join(', ') || 'None',
+                additionalCleaners: document.getElementById('additionalCleaners').value || '0',
+                totalMinutes: Math.round(totalMinutes).toString(),
+                totalHours: totalHours.toFixed(1),
+                daysRequired: daysRequired.toString(),
+                requiredCleaners: requiredCleaners.toString(),
+                totalAmount: `${CONFIG.CURRENCY}${Math.round(currentTotal).toLocaleString()}`
+            });
+
+            // Use JSONP to handle cross-origin
+            const script = document.createElement('script');
+            const callbackName = 'quoteCallback_' + Date.now();
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (response && response.result === 'success') {
+                    document.getElementById('successMessage').style.display = 'flex';
+                    document.getElementById('successMessage').innerHTML = '<i class="fas fa-check-circle"></i> Quote submitted successfully! Check your email.';
+                    
+                    // Add to live feed
+                    const feedContainer = document.getElementById('liveFeed');
+                    const newFeed = document.createElement('div');
+                    newFeed.className = 'feed-item';
+                    newFeed.innerHTML = `
+                        <div class="feed-item-header">
+                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${document.getElementById('fullName').value.split(' ')[0]} ${document.getElementById('fullName').value.split(' ')[1]?.charAt(0) || ''}.</span>
+                            <span class="feed-time"><i class="far fa-clock"></i> Just now</span>
+                        </div>
+                        <div class="feed-item-details">
+                            <span><i class="fas fa-broom"></i> ${packageName}</span>
+                            <span><i class="fas fa-tag"></i> ${CONFIG.CURRENCY}${Math.round(currentTotal).toLocaleString()}</span>
+                        </div>
+                    `;
+                    feedContainer.insertBefore(newFeed, feedContainer.firstChild);
+                    
+                    // Update stats
+                    const todayQuotes = document.getElementById('todayQuotes');
+                    todayQuotes.textContent = parseInt(todayQuotes.textContent) + 1;
+                    
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Error submitting quote. Please call ' + CONFIG.COMPANY_PHONE);
+                }
+            };
+            
+            script.src = CONFIG.API_URL + '?callback=' + callbackName + '&' + formData.toString();
+            script.onerror = function() {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert('Error submitting. Please call ' + CONFIG.COMPANY_PHONE);
+            };
+            document.body.appendChild(script);
+        }
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+            
+            if (!document.getElementById('fullName').value.trim()) {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+            const email = document.getElementById('email').value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+            if (!document.getElementById('phone').value.trim()) {
+                document.getElementById('phoneError').style.display = 'block';
+                isValid = false;
+            }
+            if (!document.getElementById('address').value.trim()) {
+                document.getElementById('addressError').style.display = 'block';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
         // Load pricing data
         async function loadPricingData() {
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -1948,14 +2424,21 @@
                     throw new Error('API connection failed');
                 }
                 
-                // Load pricing data - USING THE NEW PUBLIC ENDPOINT
+                // Load pricing data
                 const response = await fetch(CONFIG.API_URL + '?action=getPublicPricing');
                 const data = await response.json();
                 console.log('Pricing Data Response:', data);
                 
                 if (data.success && data.data) {
-                    pricingData = data.data.rows;
-                    renderCalculator(pricingData);
+                    const rows = data.data.rows;
+                    
+                    // Load working hours
+                    if (rows[62]) workingHours.hoursPerDay = rows[62][1] || 8;
+                    
+                    renderCalculator(rows);
+                    
+                    // Initialize update listeners
+                    setupCalculatorListeners(rows);
                 } else {
                     throw new Error(data.error || 'Failed to load pricing data');
                 }
@@ -2262,9 +2745,6 @@
                     </div>
                 </form>
             `;
-
-            // Initialize event listeners
-            initializeCalculator(rows);
         }
 
         function renderAddons(rows) {
@@ -2283,7 +2763,7 @@
             return html;
         }
 
-        function initializeCalculator(rows) {
+        function setupCalculatorListeners(rows) {
             // Property type switching
             window.switchPropertyType = function(type) {
                 document.querySelectorAll('.property-option').forEach(opt => opt.classList.remove('active'));
@@ -2304,15 +2784,57 @@
 
             // Calculate button
             document.getElementById('calculateBtn').addEventListener('click', function() {
-                // Basic calculation for now
-                document.getElementById('totalPrice').textContent = CONFIG.CURRENCY + '45,000';
-                document.getElementById('timeInfo').style.display = 'block';
-                document.getElementById('quoteBtn').style.display = 'flex';
-                this.style.display = 'none';
+                if (validateForm()) {
+                    calculatePrice(rows);
+                }
+            });
+
+            // Quote button
+            document.getElementById('quoteBtn').addEventListener('click', function() {
+                submitQuote(rows);
+            });
+
+            // Input change listeners
+            const inputs = ['bedrooms', 'bathrooms', 'livingrooms', 'kitchens', 'guestToilet', 'laundry', 'study', 'store',
+                           'offices', 'restrooms', 'reception', 'commercialKitchen', 'canteen', 'lounge', 'studyLibrary', 
+                           'laundryRoom', 'storeRoom', 'additionalCleaners'];
+            
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', () => {
+                        document.getElementById('quoteBtn').style.display = 'none';
+                        document.getElementById('calculateBtn').style.display = 'flex';
+                        document.getElementById('timeInfo').style.display = 'none';
+                    });
+                }
+            });
+
+            document.getElementById('frequency').addEventListener('change', () => {
+                document.getElementById('quoteBtn').style.display = 'none';
+                document.getElementById('calculateBtn').style.display = 'flex';
+                document.getElementById('timeInfo').style.display = 'none';
+            });
+            
+            document.getElementById('stainRemover').addEventListener('change', () => {
+                document.getElementById('quoteBtn').style.display = 'none';
+                document.getElementById('calculateBtn').style.display = 'flex';
+                document.getElementById('timeInfo').style.display = 'none';
+            });
+
+            document.querySelectorAll('.addon-checkbox').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    document.getElementById('quoteBtn').style.display = 'none';
+                    document.getElementById('calculateBtn').style.display = 'flex';
+                    document.getElementById('timeInfo').style.display = 'none';
+                });
             });
         }
 
-        // Start loading
+        // Initialize live feed
+        updateLiveFeed();
+
+        // Load pricing data
         loadPricingData();
     </script>
 </body>
