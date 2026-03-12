@@ -965,7 +965,7 @@
                         
                         <h5><i class="fas fa-flag"></i> Reception</h5>
                         <div class="room-row">
-                            <span class="room-label"><i class="fas fa-flag"></i> Reception:</span>
+                            <span class="room-label"><i class="fas fa-flag"></i> Reception Area:</span>
                             <input type="number" class="room-input" id="com_9_reception_price" value="${rows[9][7] || 16000}" data-row="9" data-col="8" placeholder="Price">
                             <input type="number" class="room-input" id="com_9_reception_time" value="${rows[9][8] || 30}" data-row="9" data-col="9" placeholder="Time (mins)">
                         </div>
@@ -1020,8 +1020,268 @@
                 `;
             }
             
-            // Continue with Standard Office, Large Office, and One-Time Deep Clean...
-            // (I'll add the remaining packages in the final response)
+            // Standard Office - Row 10
+            if (rows[10]) {
+                commercialHtml += `
+                    <div class="package-card">
+                        <div class="package-header">
+                            <h4><i class="fas fa-building"></i> Standard Office Package <span class="badge standard-office">PDF Page 6-8</span></h4>
+                            <p>Corporate offices, law firms • 4-8 offices + reception + toilets • 2-3 cleaners</p>
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-coins"></i> Package Base Price:</label>
+                            <input type="number" id="com_10_base" value="${rows[10][1] || 96000}" data-row="10" data-col="2" placeholder="Base Price">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-clock"></i> Base Time (hours):</label>
+                            <input type="number" id="com_10_baseTime" value="${rows[10][2] || 5}" data-row="10" data-col="3" placeholder="Base Time">
+                        </div>
+                        
+                        <h5><i class="fas fa-briefcase"></i> Offices</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-briefcase"></i> Per Office:</span>
+                            <input type="number" class="room-input" id="com_10_office_price" value="${rows[10][3] || 27000}" data-row="10" data-col="4" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_office_time" value="${rows[10][4] || 50}" data-row="10" data-col="5" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-restroom"></i> Restrooms</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-restroom"></i> Per Restroom:</span>
+                            <input type="number" class="room-input" id="com_10_restroom_price" value="${rows[10][5] || 36000}" data-row="10" data-col="6" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_restroom_time" value="${rows[10][6] || 45}" data-row="10" data-col="7" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-flag"></i> Reception</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-flag"></i> Reception Area:</span>
+                            <input type="number" class="room-input" id="com_10_reception_price" value="${rows[10][7] || 33000}" data-row="10" data-col="8" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_reception_time" value="${rows[10][8] || 40}" data-row="10" data-col="9" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensils"></i> Kitchenette</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensils"></i> Kitchenette:</span>
+                            <input type="number" class="room-input" id="com_10_kitchenette_price" value="${rows[10][9] || 9000}" data-row="10" data-col="10" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_kitchenette_time" value="${rows[10][10] || 35}" data-row="10" data-col="11" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensil-spoon"></i> Canteen</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensil-spoon"></i> Canteen:</span>
+                            <input type="number" class="room-input" id="com_10_canteen_price" value="${rows[10][11] || 20500}" data-row="10" data-col="12" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_canteen_time" value="${rows[10][12] || 70}" data-row="10" data-col="13" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-couch"></i> Lounge</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-couch"></i> Lounge:</span>
+                            <input type="number" class="room-input" id="com_10_lounge_price" value="${rows[10][13] || 19000}" data-row="10" data-col="14" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_lounge_time" value="${rows[10][14] || 40}" data-row="10" data-col="15" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-book"></i> Study/Library</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-book"></i> Study/Library:</span>
+                            <input type="number" class="room-input" id="com_10_study_price" value="${rows[10][15] || 18000}" data-row="10" data-col="16" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_study_time" value="${rows[10][16] || 40}" data-row="10" data-col="17" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-tshirt"></i> Laundry Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-tshirt"></i> Laundry Room:</span>
+                            <input type="number" class="room-input" id="com_10_laundry_price" value="${rows[10][17] || 20000}" data-row="10" data-col="18" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_laundry_time" value="${rows[10][18] || 45}" data-row="10" data-col="19" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-archive"></i> Store Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-archive"></i> Store Room:</span>
+                            <input type="number" class="room-input" id="com_10_store_price" value="${rows[10][19] || 18000}" data-row="10" data-col="20" placeholder="Price">
+                            <input type="number" class="room-input" id="com_10_store_time" value="${rows[10][20] || 35}" data-row="10" data-col="21" placeholder="Time (mins)">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-hourglass-half"></i> Extra Hour Rate:</label>
+                            <input type="number" id="com_10_extra" value="${rows[10][21] || 9500}" data-row="10" data-col="22" placeholder="Extra Hour Rate">
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Large Office - Row 11
+            if (rows[11]) {
+                commercialHtml += `
+                    <div class="package-card">
+                        <div class="package-header">
+                            <h4><i class="fas fa-building"></i> Large Office Package <span class="badge large">PDF Page 10-12</span></h4>
+                            <p>Banks, ministries, hospitals • 9-20+ offices • 4-6 cleaners</p>
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-coins"></i> Package Base Price:</label>
+                            <input type="number" id="com_11_base" value="${rows[11][1] || 150000}" data-row="11" data-col="2" placeholder="Base Price">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-clock"></i> Base Time (hours):</label>
+                            <input type="number" id="com_11_baseTime" value="${rows[11][2] || 6}" data-row="11" data-col="3" placeholder="Base Time">
+                        </div>
+                        
+                        <h5><i class="fas fa-briefcase"></i> Offices</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-briefcase"></i> Per Office:</span>
+                            <input type="number" class="room-input" id="com_11_office_price" value="${rows[11][3] || 45000}" data-row="11" data-col="4" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_office_time" value="${rows[11][4] || 60}" data-row="11" data-col="5" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-restroom"></i> Restrooms</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-restroom"></i> Per Restroom:</span>
+                            <input type="number" class="room-input" id="com_11_restroom_price" value="${rows[11][5] || 54000}" data-row="11" data-col="6" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_restroom_time" value="${rows[11][6] || 50}" data-row="11" data-col="7" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-flag"></i> Reception</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-flag"></i> Reception Area:</span>
+                            <input type="number" class="room-input" id="com_11_reception_price" value="${rows[11][7] || 51000}" data-row="11" data-col="8" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_reception_time" value="${rows[11][8] || 45}" data-row="11" data-col="9" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensils"></i> Kitchenette</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensils"></i> Kitchenette:</span>
+                            <input type="number" class="room-input" id="com_11_kitchenette_price" value="${rows[11][9] || 15000}" data-row="11" data-col="10" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_kitchenette_time" value="${rows[11][10] || 40}" data-row="11" data-col="11" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensil-spoon"></i> Canteen</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensil-spoon"></i> Canteen:</span>
+                            <input type="number" class="room-input" id="com_11_canteen_price" value="${rows[11][11] || 35000}" data-row="11" data-col="12" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_canteen_time" value="${rows[11][12] || 80}" data-row="11" data-col="13" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-couch"></i> Lounge</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-couch"></i> Lounge:</span>
+                            <input type="number" class="room-input" id="com_11_lounge_price" value="${rows[11][13] || 29900}" data-row="11" data-col="14" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_lounge_time" value="${rows[11][14] || 45}" data-row="11" data-col="15" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-book"></i> Study/Library</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-book"></i> Study/Library:</span>
+                            <input type="number" class="room-input" id="com_11_study_price" value="${rows[11][15] || 29000}" data-row="11" data-col="16" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_study_time" value="${rows[11][16] || 45}" data-row="11" data-col="17" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-tshirt"></i> Laundry Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-tshirt"></i> Laundry Room:</span>
+                            <input type="number" class="room-input" id="com_11_laundry_price" value="${rows[11][17] || 31000}" data-row="11" data-col="18" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_laundry_time" value="${rows[11][18] || 50}" data-row="11" data-col="19" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-archive"></i> Store Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-archive"></i> Store Room:</span>
+                            <input type="number" class="room-input" id="com_11_store_price" value="${rows[11][19] || 29500}" data-row="11" data-col="20" placeholder="Price">
+                            <input type="number" class="room-input" id="com_11_store_time" value="${rows[11][20] || 40}" data-row="11" data-col="21" placeholder="Time (mins)">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-hourglass-half"></i> Extra Hour Rate:</label>
+                            <input type="number" id="com_11_extra" value="${rows[11][21] || 14000}" data-row="11" data-col="22" placeholder="Extra Hour Rate">
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // One-Time Deep Clean - Row 12
+            if (rows[12]) {
+                commercialHtml += `
+                    <div class="package-card">
+                        <div class="package-header">
+                            <h4><i class="fas fa-building"></i> One-Time Deep Clean Package <span class="badge onetime">PDF Page 14-16</span></h4>
+                            <p>End-of-year, post-renovation • 4-8 cleaners • Comprehensive deep cleaning</p>
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-coins"></i> Package Base Price:</label>
+                            <input type="number" id="com_12_base" value="${rows[12][1] || 249000}" data-row="12" data-col="2" placeholder="Base Price">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-clock"></i> Base Time (hours):</label>
+                            <input type="number" id="com_12_baseTime" value="${rows[12][2] || 7}" data-row="12" data-col="3" placeholder="Base Time">
+                        </div>
+                        
+                        <h5><i class="fas fa-briefcase"></i> Offices</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-briefcase"></i> Per Office:</span>
+                            <input type="number" class="room-input" id="com_12_office_price" value="${rows[12][3] || 78000}" data-row="12" data-col="4" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_office_time" value="${rows[12][4] || 70}" data-row="12" data-col="5" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-restroom"></i> Restrooms</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-restroom"></i> Per Restroom:</span>
+                            <input type="number" class="room-input" id="com_12_restroom_price" value="${rows[12][5] || 87000}" data-row="12" data-col="6" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_restroom_time" value="${rows[12][6] || 60}" data-row="12" data-col="7" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-flag"></i> Reception</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-flag"></i> Reception Area:</span>
+                            <input type="number" class="room-input" id="com_12_reception_price" value="${rows[12][7] || 84000}" data-row="12" data-col="8" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_reception_time" value="${rows[12][8] || 55}" data-row="12" data-col="9" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensils"></i> Kitchenette</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensils"></i> Kitchenette:</span>
+                            <input type="number" class="room-input" id="com_12_kitchenette_price" value="${rows[12][9] || 22500}" data-row="12" data-col="10" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_kitchenette_time" value="${rows[12][10] || 50}" data-row="12" data-col="11" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-utensil-spoon"></i> Canteen</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-utensil-spoon"></i> Canteen:</span>
+                            <input type="number" class="room-input" id="com_12_canteen_price" value="${rows[12][11] || 41000}" data-row="12" data-col="12" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_canteen_time" value="${rows[12][12] || 90}" data-row="12" data-col="13" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-couch"></i> Lounge</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-couch"></i> Lounge:</span>
+                            <input type="number" class="room-input" id="com_12_lounge_price" value="${rows[12][13] || 34000}" data-row="12" data-col="14" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_lounge_time" value="${rows[12][14] || 50}" data-row="12" data-col="15" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-tshirt"></i> Laundry Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-tshirt"></i> Laundry Room:</span>
+                            <input type="number" class="room-input" id="com_12_laundry_price" value="${rows[12][17] || 36800}" data-row="12" data-col="18" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_laundry_time" value="${rows[12][18] || 55}" data-row="12" data-col="19" placeholder="Time (mins)">
+                        </div>
+                        
+                        <h5><i class="fas fa-archive"></i> Store Room</h5>
+                        <div class="room-row">
+                            <span class="room-label"><i class="fas fa-archive"></i> Store Room:</span>
+                            <input type="number" class="room-input" id="com_12_store_price" value="${rows[12][19] || 35000}" data-row="12" data-col="20" placeholder="Price">
+                            <input type="number" class="room-input" id="com_12_store_time" value="${rows[12][20] || 45}" data-row="12" data-col="21" placeholder="Time (mins)">
+                        </div>
+                        
+                        <div class="price-item">
+                            <label><i class="fas fa-hourglass-half"></i> Extra Hour Rate:</label>
+                            <input type="number" id="com_12_extra" value="${rows[12][21] || 20000}" data-row="12" data-col="22" placeholder="Extra Hour Rate">
+                        </div>
+                    </div>
+                `;
+            }
             
             document.getElementById('commercialPrices').innerHTML = commercialHtml || '<p>No commercial data found</p>';
             
