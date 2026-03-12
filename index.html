@@ -1948,9 +1948,12 @@
                     throw new Error('API connection failed');
                 }
                 
-                // Load pricing data
-                console.log('Loading pricing data...');
+                // Load pricing data - CHANGE THIS LINE:
                 const response = await fetch(CONFIG.API_URL + '?action=getPricing');
+                
+                // TO THIS:
+                const response = await fetch(CONFIG.API_URL + '?action=getPublicPricing');
+                
                 const data = await response.json();
                 console.log('Pricing Data Response:', data);
                 
