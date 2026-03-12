@@ -910,6 +910,14 @@
             font-size: 0.9rem;
         }
 
+        .schedule-details {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            color: #555;
+        }
+
         /* Button Group */
         .button-group {
             display: flex;
@@ -1915,50 +1923,71 @@
         };
 
         // ========== LIVE FEED FUNCTIONS ==========
+        let activeNowCount = 12;
+        
+        // Generate a daily quote count based on the date (changes every 24 hours)
+        function getDailyQuoteCount() {
+            const today = new Date();
+            // Use date as seed for consistent daily number
+            const dateSeed = today.getFullYear() * 1000 + (today.getMonth() + 1) * 100 + today.getDate();
+            
+            // Generate a number between 15 and 35 based on the date
+            // This ensures the same number shows all day, but changes each day
+            const dailyQuotes = 15 + (dateSeed % 21); // 15-35 range
+            
+            return dailyQuotes;
+        }
+        
         function updateLiveFeed() {
             const feedContainer = document.getElementById('liveFeed');
-            const todayQuotes = document.getElementById('todayQuotes');
             const activeNow = document.getElementById('activeNow');
-            const liveCounter = document.getElementById('liveCounter');
+            const todayQuotes = document.getElementById('todayQuotes');
             
-            // Update random stats
-            const todayCount = Math.floor(Math.random() * 30) + 15;
-            const activeCount = Math.floor(Math.random() * 15) + 5;
+            // Update today's quotes (only changes when date changes)
+            todayQuotes.textContent = getDailyQuoteCount();
             
-            todayQuotes.textContent = todayCount;
-            activeNow.textContent = activeCount;
+            // Slowly vary active now count (between 8-16)
+            const variation = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+            activeNowCount = Math.max(8, Math.min(16, activeNowCount + variation));
+            activeNow.textContent = activeNowCount;
             
-            // Create random feed items
-            const numItems = Math.floor(Math.random() * 3) + 4; // 4-6 items
+            // Fixed set of recent customers for consistency
+            const recentCustomers = [
+                { name: 'John D.', service: 'Standard Cleaning', amount: 45000, time: '2 min ago' },
+                { name: 'Sarah M.', service: 'Deep Cleaning', amount: 82000, time: '5 min ago' },
+                { name: 'Michael O.', service: 'Office Cleaning', amount: 96000, time: '12 min ago' },
+                { name: 'Blessing A.', service: 'Move-In Cleaning', amount: 120000, time: '18 min ago' },
+                { name: 'Chidi E.', service: 'Commercial Cleaning', amount: 150000, time: '25 min ago' }
+            ];
+            
             let feedHtml = '';
-            
-            for (let i = 0; i < numItems; i++) {
-                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                const lastNameInitial = lastInitials[Math.floor(Math.random() * lastInitials.length)];
-                const service = serviceTypes[Math.floor(Math.random() * serviceTypes.length)];
-                const amount = Math.floor(Math.random() * 150000) + 30000;
-                const minutesAgo = Math.floor(Math.random() * 30) + 1;
-                
+            recentCustomers.forEach(customer => {
                 feedHtml += `
                     <div class="feed-item">
                         <div class="feed-item-header">
-                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${firstName} ${lastNameInitial}.</span>
-                            <span class="feed-time"><i class="far fa-clock"></i> ${minutesAgo} min ago</span>
+                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${customer.name}</span>
+                            <span class="feed-time"><i class="far fa-clock"></i> ${customer.time}</span>
                         </div>
                         <div class="feed-item-details">
-                            <span><i class="fas fa-broom"></i> ${service}</span>
-                            <span><i class="fas fa-tag"></i> ${CONFIG.CURRENCY}${amount.toLocaleString()}</span>
+                            <span><i class="fas fa-broom"></i> ${customer.service}</span>
+                            <span><i class="fas fa-tag"></i> ${CONFIG.CURRENCY}${customer.amount.toLocaleString()}</span>
                         </div>
                     </div>
                 `;
-            }
+            });
             
             feedContainer.innerHTML = feedHtml;
-            liveCounter.textContent = numItems;
+            document.getElementById('liveCounter').textContent = recentCustomers.length;
         }
 
-        // Update live feed every 10 seconds
-        setInterval(updateLiveFeed, 10000);
+        // Set initial today's quotes
+        document.getElementById('todayQuotes').textContent = getDailyQuoteCount();
+        
+        // Update live feed every 30 seconds (slower)
+        setInterval(updateLiveFeed, 30000);
+        
+        // Initial update
+        updateLiveFeed();
 
         // ========== CALCULATOR FUNCTIONS ==========
         const frequencyDiscounts = {
@@ -2239,7 +2268,7 @@
             breakdown.forEach(item => {
                 if (item.hidePrice) {
                     // Show item name only, no price
-                    breakdownHtml += `<div class="breakdown-item"><span class="label">${item.item}</span><span class="value" style="color: transparent; user-select: none;">••••</span></div>`;
+                    breakdownHtml += `<div class="breakdown-item"><span class="label">${item.item}</span><span class="value" style="color: transparent; text-shadow: none; background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; user-select: none;">••••</span></div>`;
                 } else if (item.cost) {
                     // For non-price items like time info
                     breakdownHtml += `<div class="breakdown-item"><span class="label">${item.item}</span><span class="value">${item.cost}</span></div>`;
@@ -2318,7 +2347,7 @@
             
             const formData = new URLSearchParams({
                 action: 'submitQuote',
-                secretToken: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74', // Your API secret token
+                secretToken: 'f92eb205-40c7-4a21-a02a-9f4a2422ae74',
                 fullName: document.getElementById('fullName').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 phone: document.getElementById('phone').value.trim(),
@@ -2733,6 +2762,7 @@
                             <div id="multiDayBadge" class="multi-day-badge" style="display: none;">
                                 <i class="fas fa-calendar-alt"></i> Multi-day Booking Required
                             </div>
+                            <div id="scheduleDetails" class="schedule-details"></div>
                         </div>
                     </div>
 
