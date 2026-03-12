@@ -1194,6 +1194,203 @@
             transform: translateY(-3px);
         }
 
+        /* Contact Modal Styles */
+        .contact-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .contact-modal-content {
+            background: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 30px;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .contact-modal-content h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-modal-content p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .contact-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .contact-option {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-option i {
+            font-size: 2rem;
+        }
+
+        .contact-option.call {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .contact-option.whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+
+        .contact-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .close-contact {
+            position: absolute;
+            right: 1rem;
+            top: 0.5rem;
+            font-size: 2rem;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-contact:hover {
+            color: #333;
+        }
+
+        /* Video Slider Styles */
+        .video-slider {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+
+        .video-slider h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .video-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .video-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .video-dots {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .video-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .hero-content {
@@ -1393,20 +1590,62 @@
         </div>
     </section>
 
+        <!-- Contact Modal -->
+    <div id="contactModal" class="contact-modal" onclick="closeContactModalOnOutside(event)">
+        <div class="contact-modal-content" onclick="event.stopPropagation()">
+            <span class="close-contact" onclick="closeContactModal()">&times;</span>
+            <h3><i class="fas fa-headset"></i> Contact Us</h3>
+            <p>How would you like to connect with us?</p>
+            <div class="contact-options">
+                <a href="tel:+2347049189964" class="contact-option call">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Call Now</span>
+                </a>
+                <a href="https://wa.me/2347049189964" target="_blank" class="contact-option whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-logo">
-                <i class="fas fa-broom"></i> KRO Media
+                <i class="fas fa-broom"></i> KRO Services
             </div>
             <p>Professional cleaning services you can trust. Get your instant quote today!</p>
+            
+            <!-- Video Slider -->
+            <div class="video-slider">
+                <h3><i class="fas fa-play-circle"></i> Our Work in Action</h3>
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe id="videoPlayer" src="https://www.youtube.com/embed/vgWyjYBvsUk" title="KRO Cleaning Service" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-controls">
+                        <button class="video-btn" id="prevVideo" onclick="changeVideo(-1)" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="video-btn" id="nextVideo" onclick="changeVideo(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="video-dots" id="videoDots">
+                        <span class="video-dot active" onclick="jumpToVideo(0)"></span>
+                        <span class="video-dot" onclick="jumpToVideo(1)"></span>
+                    </div>
+                </div>
+            </div>
+
             <div class="social-links">
                 <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
                 <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
             </div>
-            <p style="margin-top: 2rem; font-size: 0.9rem;">&copy; 2024 K.R.O Cleaning Service. All rights reserved.</p>
+            <p style="margin-top: 2rem; font-size: 0.9rem;">&copy; 2026 Powered By K.R.O Media. All rights reserved.</p>
         </div>
     </footer>
 
@@ -2901,6 +3140,74 @@
 
         // Load pricing data
         loadPricingData();
+
+        // ========== CONTACT MODAL FUNCTIONS ==========
+        const contactModal = document.getElementById('contactModal');
+        
+        // Open contact modal when Contact Us button is clicked
+        document.querySelector('a[href="#pricing"].btn-secondary').addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.style.display = 'block';
+        });
+
+        // Close modal function
+        window.closeContactModal = function() {
+            contactModal.style.display = 'none';
+        };
+
+        // Close modal when clicking outside
+        window.closeContactModalOnOutside = function(event) {
+            if (event.target === contactModal) {
+                contactModal.style.display = 'none';
+            }
+        };
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && contactModal.style.display === 'block') {
+                contactModal.style.display = 'none';
+            }
+        });
+
+        // ========== VIDEO SLIDER FUNCTIONS ==========
+        const videos = [
+            'vgWyjYBvsUk',  // First video ID
+            '60q_y5IDD6U'   // Second video ID
+        ];
+        
+        let currentVideo = 0;
+        const videoPlayer = document.getElementById('videoPlayer');
+        const prevBtn = document.getElementById('prevVideo');
+        const nextBtn = document.getElementById('nextVideo');
+        const videoDots = document.getElementById('videoDots');
+
+        window.changeVideo = function(direction) {
+            currentVideo += direction;
+            updateVideo();
+        };
+
+        window.jumpToVideo = function(index) {
+            currentVideo = index;
+            updateVideo();
+        };
+
+        function updateVideo() {
+            // Update video source
+            videoPlayer.src = `https://www.youtube.com/embed/${videos[currentVideo]}?autoplay=1`;
+            
+            // Update buttons state
+            prevBtn.disabled = currentVideo === 0;
+            nextBtn.disabled = currentVideo === videos.length - 1;
+            
+            // Update dots
+            document.querySelectorAll('.video-dot').forEach((dot, index) => {
+                if (index === currentVideo) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
     </script>
 </body>
 </html>
