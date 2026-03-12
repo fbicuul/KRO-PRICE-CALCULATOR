@@ -1938,6 +1938,32 @@
             return dailyQuotes;
         }
         
+        // Array of 15 different customer names with their typical services
+        const customerDatabase = [
+            { firstName: 'John', lastName: 'D.', service: 'Standard Cleaning', amount: 45000, baseTime: '2 min ago' },
+            { firstName: 'Sarah', lastName: 'M.', service: 'Deep Cleaning', amount: 82000, baseTime: '5 min ago' },
+            { firstName: 'Michael', lastName: 'O.', service: 'Office Cleaning', amount: 96000, baseTime: '8 min ago' },
+            { firstName: 'Blessing', lastName: 'A.', service: 'Move-In Cleaning', amount: 120000, baseTime: '12 min ago' },
+            { firstName: 'Chidi', lastName: 'E.', service: 'Commercial Cleaning', amount: 150000, baseTime: '15 min ago' },
+            { firstName: 'Amaka', lastName: 'N.', service: 'Standard Cleaning', amount: 38000, baseTime: '18 min ago' },
+            { firstName: 'Tunde', lastName: 'B.', service: 'Deep Cleaning', amount: 75000, baseTime: '22 min ago' },
+            { firstName: 'Ngozi', lastName: 'P.', service: 'Office Cleaning', amount: 210000, baseTime: '25 min ago' },
+            { firstName: 'Emeka', lastName: 'K.', service: 'Move-In Cleaning', amount: 135000, baseTime: '28 min ago' },
+            { firstName: 'Funke', lastName: 'S.', service: 'Standard Cleaning', amount: 42000, baseTime: '31 min ago' },
+            { firstName: 'Adebayo', lastName: 'T.', service: 'Commercial Cleaning', amount: 280000, baseTime: '35 min ago' },
+            { firstName: 'Chioma', lastName: 'W.', service: 'Deep Cleaning', amount: 89000, baseTime: '38 min ago' },
+            { firstName: 'Oluchi', lastName: 'J.', service: 'Office Cleaning', amount: 175000, baseTime: '42 min ago' },
+            { firstName: 'Kayode', lastName: 'R.', service: 'Move-In Cleaning', amount: 145000, baseTime: '45 min ago' },
+            { firstName: 'Zainab', lastName: 'F.', service: 'Standard Cleaning', amount: 52000, baseTime: '48 min ago' }
+        ];
+        
+        // Function to get random items from the database
+        function getRandomFeedItems(count) {
+            // Shuffle array and pick random items
+            const shuffled = [...customerDatabase].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+        
         function updateLiveFeed() {
             const feedContainer = document.getElementById('liveFeed');
             const activeNow = document.getElementById('activeNow');
@@ -1951,22 +1977,24 @@
             activeNowCount = Math.max(8, Math.min(16, activeNowCount + variation));
             activeNow.textContent = activeNowCount;
             
-            // Fixed set of recent customers for consistency
-            const recentCustomers = [
-                { name: 'John D.', service: 'Standard Cleaning', amount: 45000, time: '2 min ago' },
-                { name: 'Sarah M.', service: 'Deep Cleaning', amount: 82000, time: '5 min ago' },
-                { name: 'Michael O.', service: 'Office Cleaning', amount: 96000, time: '12 min ago' },
-                { name: 'Blessing A.', service: 'Move-In Cleaning', amount: 120000, time: '18 min ago' },
-                { name: 'Chidi E.', service: 'Commercial Cleaning', amount: 150000, time: '25 min ago' }
-            ];
+            // Get 5-7 random customers for variety
+            const numItems = Math.floor(Math.random() * 3) + 5; // 5-7 items
+            const selectedCustomers = getRandomFeedItems(numItems);
             
+            // Slightly vary the times to make it look fresh
             let feedHtml = '';
-            recentCustomers.forEach(customer => {
+            selectedCustomers.forEach((customer, index) => {
+                // Randomize the time slightly (±3 minutes)
+                const baseMinutes = parseInt(customer.baseTime);
+                const variation = Math.floor(Math.random() * 7) - 3; // -3 to +3 minutes
+                const adjustedMinutes = Math.max(1, baseMinutes + variation);
+                const timeText = adjustedMinutes === 1 ? '1 min ago' : `${adjustedMinutes} min ago`;
+                
                 feedHtml += `
                     <div class="feed-item">
                         <div class="feed-item-header">
-                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${customer.name}</span>
-                            <span class="feed-time"><i class="far fa-clock"></i> ${customer.time}</span>
+                            <span class="customer-name"><i class="fas fa-user-circle"></i> ${customer.firstName} ${customer.lastName}</span>
+                            <span class="feed-time"><i class="far fa-clock"></i> ${timeText}</span>
                         </div>
                         <div class="feed-item-details">
                             <span><i class="fas fa-broom"></i> ${customer.service}</span>
@@ -1977,14 +2005,14 @@
             });
             
             feedContainer.innerHTML = feedHtml;
-            document.getElementById('liveCounter').textContent = recentCustomers.length;
+            document.getElementById('liveCounter').textContent = selectedCustomers.length;
         }
 
         // Set initial today's quotes
         document.getElementById('todayQuotes').textContent = getDailyQuoteCount();
         
-        // Update live feed every 30 seconds (slower)
-        setInterval(updateLiveFeed, 30000);
+        // Update live feed every 20 seconds (good balance between active and not too fast)
+        setInterval(updateLiveFeed, 20000);
         
         // Initial update
         updateLiveFeed();
