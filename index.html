@@ -523,6 +523,18 @@
 
         .calculator-body {
             padding: 3rem;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        /* Make calculator body scrollable on mobile */
+        @media (max-width: 768px) {
+            .calculator-body {
+                padding: 1.5rem;
+                max-height: 70vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
 
         /* Form Styles */
@@ -1457,6 +1469,9 @@
 
             .calculator-body {
                 padding: 1.5rem;
+                max-height: 70vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .button-group {
@@ -1590,7 +1605,7 @@
         </div>
     </section>
 
-        <!-- Contact Modal -->
+    <!-- Contact Modal -->
     <div id="contactModal" class="contact-modal" onclick="closeContactModalOnOutside(event)">
         <div class="contact-modal-content" onclick="event.stopPropagation()">
             <span class="close-contact" onclick="closeContactModal()">&times;</span>
