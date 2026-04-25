@@ -1583,7 +1583,7 @@
     <section id="pricing" class="calculator-section">
         <div class="section-header" data-aos="fade-up">
             <h2>Instant <span>Price Calculator</span></h2>
-            <p>Get an accurate quote in seconds. Kindly note that transportation to site is not included in the quote.</p>
+            <p>Get an accurate quote in seconds. All prices are dynamically updated from our database.</p>
         </div>
 
         <div class="calculator-wrapper" data-aos="fade-up">
@@ -2118,6 +2118,42 @@
         let currentTotal = 0;
         let currentFormData = null;
 
+        // Reset price display function - called when property type or package changes
+        function resetPriceDisplay() {
+            // Reset total price display
+            const totalPriceEl = document.getElementById('totalPrice');
+            if (totalPriceEl) {
+                totalPriceEl.textContent = `${CONFIG.CURRENCY}0`;
+            }
+            
+            // Clear breakdown
+            const priceBreakdownEl = document.getElementById('priceBreakdown');
+            if (priceBreakdownEl) {
+                priceBreakdownEl.innerHTML = '';
+            }
+            
+            // Hide time info
+            const timeInfoEl = document.getElementById('timeInfo');
+            if (timeInfoEl) {
+                timeInfoEl.style.display = 'none';
+            }
+            
+            // Switch buttons: hide quote, show calculate
+            const quoteBtn = document.getElementById('quoteBtn');
+            const calculateBtn = document.getElementById('calculateBtn');
+            if (quoteBtn) quoteBtn.style.display = 'none';
+            if (calculateBtn) calculateBtn.style.display = 'flex';
+            
+            // Hide success message if visible
+            const successMsg = document.getElementById('successMessage');
+            if (successMsg) {
+                successMsg.style.display = 'none';
+            }
+            
+            // Reset current total
+            currentTotal = 0;
+        }
+
         // Modal functions
         window.closeModal = function() {
             document.getElementById('packageModal').style.display = 'none';
@@ -2166,16 +2202,20 @@
 
         window.selectResidentialPackage = function(pkgId) {
             currentResidentialPackage = pkgId;
-            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('#residentialPackages .package-card').forEach(card => card.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
             showPackageInfo('residential-' + pkgId);
+            // Reset price display when package changes
+            resetPriceDisplay();
         };
 
         window.selectCommercialPackage = function(pkgId) {
             currentCommercialPackage = pkgId;
-            document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('#commercialPackages .package-card').forEach(card => card.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
             showPackageInfo('commercial-' + pkgId);
+            // Reset price display when package changes
+            resetPriceDisplay();
         };
 
         // ========== LIVE FEED FUNCTIONS ==========
@@ -3091,16 +3131,20 @@
                 event.target.classList.add('active');
                 
                 if (type === 'residential') {
+                    currentPropertyType = 'residential';
                     document.getElementById('residentialPackages').style.display = 'block';
                     document.getElementById('commercialPackages').style.display = 'none';
                     document.getElementById('residentialDetails').style.display = 'block';
                     document.getElementById('commercialDetails').style.display = 'none';
                 } else {
+                    currentPropertyType = 'commercial';
                     document.getElementById('residentialPackages').style.display = 'none';
                     document.getElementById('commercialPackages').style.display = 'block';
                     document.getElementById('residentialDetails').style.display = 'none';
                     document.getElementById('commercialDetails').style.display = 'block';
                 }
+                // Reset price display when property type changes
+                resetPriceDisplay();
             };
 
             // Calculate button
